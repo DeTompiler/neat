@@ -10,7 +10,7 @@ class Genome:
 
     def __init__(self, neat):
         self.neat = neat
-        self.nodes = {}
+        self.nodes = deque()
         self.connections = deque()
 
 
