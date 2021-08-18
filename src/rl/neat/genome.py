@@ -1,7 +1,7 @@
 from collections import deque
 import numpy as np
-from neat.connection_gene import ConnectionGene
-from neat.node_gene import NodeGene
+from src.rl.neat.connection_gene import ConnectionGene
+from src.rl.neat.node_gene import NodeGene
 
 
 class Genome:

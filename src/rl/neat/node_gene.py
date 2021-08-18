@@ -1,4 +1,4 @@
-from neat.gene import Gene
+from src.rl.neat.gene import Gene
 from collections import deque
 
 

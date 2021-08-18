@@ -1,5 +1,5 @@
-from neat.gene import Gene
-from neat.utils import Math
+from src.rl.neat.gene import Gene
+from src.rl.neat.utils import Math
 import numpy as np
 
 
