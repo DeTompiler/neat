@@ -34,29 +34,26 @@ class Neat:
         self.nodes = {}
 
 
-    def get_node(self, genome, connection):
+    def get_node(self, connection):
         if not connection.innovation_nb in self.nodes:
             self.node_innovation_nb += 1
 
-            nb_outputs = genome.get_nb_nodes_in_layer(connection.node_out.layer_nb)
-            
             self.nodes[connection.innovation_nb] = NodeGene(self.node_innovation_nb, output=0,
-               layer_nb=(connection.node_in.layer_nb + connection.node_out.layer_nb) / 2,
-               index_in_layer=connection.node_in.index_in_layer * nb_outputs + connection.node_out.index_in_layer)
+               layer_nb=(connection.node_in.layer_nb + connection.node_out.layer_nb) / 2)
 
         return self.nodes[connection.innovation_nb].copy()
     
 
-    def get_new_node(self, output, layer_nb, index_in_layer):
+    def get_new_node(self, output, layer_nb):
         self.node_innovation_nb += 1
-        return NodeGene(self.node_innovation_nb, output=output, layer_nb=layer_nb, index_in_layer=index_in_layer)
+        return NodeGene(self.node_innovation_nb, output=output, layer_nb=layer_nb)
     
 
     def get_minimal_genome(self, input_size, output_size):
         genome = Genome(self)
 
-        inputs = [self.get_new_node(0, self.input_layer_nb, index_in_layer) for index_in_layer in range(input_size)]
-        outputs = [self.get_new_node(0, self.output_layer_nb, index_in_layer) for index_in_layer in range(output_size)]
+        inputs = [self.get_new_node(0, self.input_layer_nb) for index_in_layer in range(input_size)]
+        outputs = [self.get_new_node(0, self.output_layer_nb) for index_in_layer in range(output_size)]
         
         for input_node in inputs:
             for output_node in outputs:
