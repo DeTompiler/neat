@@ -134,5 +134,43 @@ class Genome:
         self.connections.remove(connection)
 
 
+    def distance(self, genome):
+        g1, g2 = self, genome if self.connections[-1].innovation_nb > genome.connections[-1].innovation_nb else genome, self
+
+        idx1 = 0
+        idx2 = 0
+        len1 = len(g1.connections)
+        len2 = len(g2.connections)
+
+        similar_genes = 0
+        disjoint_genes = 0
+        weight_diff = 0
+
+        while(idx1 < len1 and idx2 < len2):
+            con1 = g1.connections[idx1]
+            con2 = g2.connections[idx2]
+
+            if con1.innovation_nb == con2.innovation_nb:
+                similar_genes += 1
+                weight_diff += abs(con1.weight - con2.weight)
+                idx1 += 1
+                idx2 += 1
+
+            elif con1.innovation_nb > con2.innovation_nb:
+                disjoint_genes += 1
+                idx2 += 1
+            else:
+                disjoint_genes += 1
+                idx1 += 1    
+
+        avg_weight_diff = weight_diff / similar_genes
+        excess_genes = len(g1.connections) - idx1
+
+        genes_nb = max(len(g1.connections), len(g2.connections))
+        genes_nb = 1 if genes_nb < 20 else genes_nb
+
+        return (self.neat.c1 * excess_genes / genes_nb) + (self.neat.c2 * disjoint_genes / genes_nb) + self.neat.c3 * avg_weight_diff
+
+
     def crossover(self, gemone):
         pass
