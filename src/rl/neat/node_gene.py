@@ -21,6 +21,14 @@ class NodeGene(Gene):
         return NodeGene(self.innovation_nb, connections, self.output, self.layer_nb)
 
 
+    def has_connection_to(self, node):
+        for connection in self.connections:
+            if connection.node_out == node:
+                return True
+
+        return False
+
+
     def __eq__(self, node_gene):
         return self.innovation_nb == node_gene.innovation_number
         
