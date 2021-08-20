@@ -17,6 +17,11 @@ class Neat:
         self.input_size = input_size
         self.output_size = output_size
 
+        self.c1 = kwargs.get('c1', 1.0)
+        self.c2 = kwargs.get('c2', 1.0)
+        self.c3 = kwargs.get('c3', 0.4)
+        
+
         self.toggle_probability = kwargs.get('toggle_probability', 0.01)
         self.shift_probability = kwargs.get('shift_probability', 0.01)
         self.random_probability = kwargs.get('random_probability', 0.01)
