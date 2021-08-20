@@ -63,8 +63,8 @@ class Neat:
                 input_node.connections.append(connection)
                 genome.add_sorted_connection(connection)
 
-        genome.nodes.extend(inputs)
-        genome.nodes.extend(outputs)
+        genome.add_nodes(inputs)
+        genome.add_nodes(outputs)
 
         return genome
 
