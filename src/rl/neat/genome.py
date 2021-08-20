@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque, OrderedDict
 import numpy as np
 from src.rl.neat.connection_gene import ConnectionGene
 from src.rl.neat.node_gene import NodeGene
@@ -10,6 +10,7 @@ class Genome:
 
     def __init__(self, neat):
         self.neat = neat
+        self.layers = OrderedDict()
         self.nodes = deque()
         self.connections = deque()
 
@@ -17,8 +18,15 @@ class Genome:
     def copy(self):
         genome = Genome(self.neat)
         
-        for node in self.nodes:
-            genome.nodes.append(node.copy())
+        for layer_nb, layer in self.layers.items():
+            copied_layer = deque()
+
+            for node in layer:
+                copied_node = node.copy()
+                genome.nodes.append(copied_node)
+                copied_layer.append(copied_node)
+
+            genome.layers[layer_nb] = copied_layer
 
         for connection in self.connections:
             genome.connections.append(connection.copy())
@@ -29,6 +37,16 @@ class Genome:
     def reset(self):
         for node in self.nodes:
             node.output = 0
+
+    
+
+    def add_node(self, node):
+        self.nodes.append(node)
+
+        if not node.layer_nb in self.layers:
+            self.layers[node.layer_nb] = deque([node])
+        else:
+            self.layers[node.layer_nb].append(node)
         
 
     def add_sorted_connection(self, connection):
