@@ -112,7 +112,7 @@ class Genome:
             node_in = self.random_node()
             node_out = self.random_node()
 
-            if node_in.layer_nb != node_out.layer_nb:
+            if (not node_in.has_connection_to(node_out)) and node_in.layer_nb != node_out.layer_nb:
                 if node_in.layer_nb > node_out.layer_nb:
                     node_in, node_out = node_out, node_in
                 
