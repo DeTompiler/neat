@@ -47,6 +47,11 @@ class Genome:
             self.layers[node.layer_nb] = deque([node])
         else:
             self.layers[node.layer_nb].append(node)
+    
+
+    def add_nodes(self, nodes):
+        for node in nodes:
+            self.add_node(node)
         
 
     def add_sorted_connection(self, connection):
