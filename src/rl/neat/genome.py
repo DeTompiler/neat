@@ -29,7 +29,10 @@ class Genome:
             genome.layers[layer_nb] = copied_layer
 
         for connection in self.connections:
-            genome.connections.append(connection.copy())
+            copied_connection = connection.copy()
+
+            genome.connections.append(copied_connection)
+            copied_connection.node_in.connections.append(copied_connection)
         
         return genome
 
