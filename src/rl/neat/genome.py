@@ -43,6 +43,18 @@ class Genome:
 
     
 
+    def get_node(self, innovation_nb):
+        for node in self.nodes:
+            if node.innovation_nb == innovation_nb:
+                return node
+        
+        return None
+
+    
+    def node_exists(self, innovation_nb):
+        return self.get_node(innovation_nb) is not None
+
+
     def add_node(self, node):
         self.nodes.append(node)
 
