@@ -18,22 +18,21 @@ class Genome:
     def copy(self):
         genome = Genome(self.neat)
         
-        for layer_nb, layer in self.layers.items():
-            copied_layer = deque()
-
-            for node in layer:
-                copied_node = node.copy()
-                genome.nodes.append(copied_node)
-                copied_layer.append(copied_node)
-
-            genome.layers[layer_nb] = copied_layer
-
         for connection in self.connections:
-            copied_connection = connection.copy()
+            node_in = genome.get_node(connection.node_in.innovation_nb)
+            node_out = genome.get_node(connection.node_out.innovation_nb)
 
-            genome.connections.append(copied_connection)
-            copied_connection.node_in.connections.append(copied_connection)
-        
+            if node_in is None:
+                node_in = connection.node_in.copy()
+                genome.add_node(node_in)
+            if node_out is None:
+                node_out = connection.node_out.copy()
+                genome.add_node(node_out)
+            
+            copied_connection = connection.copy(node_in, node_out)
+            node_in.connections.append(copied_connection)
+            genome.add_connection(copied_connection)
+
         return genome
 
 
