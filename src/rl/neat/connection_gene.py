@@ -15,8 +15,11 @@ class ConnectionGene(Gene):
         self.enabled = enabled
 
 
-    def copy(self):
-        return ConnectionGene(self.node_in.copy(), self.node_out.copy(), self.weight, self.enabled)
+    def copy(self, node_in=None, node_out=None):
+        node_in = self.node_in.copy() if node_in is None else node_in
+        node_out = self.node_out.copy() if node_out is None else node_out
+        
+        return ConnectionGene(node_in, node_out, self.weight, self.enabled)
 
 
     def get_random_weight(self, weight_randomization_factor=1.):
