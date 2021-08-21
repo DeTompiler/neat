@@ -8,9 +8,9 @@ class NodeGene(Gene):
         - index_in_layer may need to be used for visualization only
     '''
 
-    def __init__(self, innovation_nb, connections=deque(), output=0, layer_nb=0):
+    def __init__(self, innovation_nb, connections=None, output=0, layer_nb=0):
         super().__init__(innovation_nb)
-        self.connections = connections
+        self.connections = deque() if connections is None else connections
         self.output = output
         self.layer_nb = layer_nb
 
