@@ -17,7 +17,15 @@ class Genome:
 
     def copy(self):
         genome = Genome(self.neat)
-        
+
+        input_layer = self.layers[self.neat.input_layer_nb]
+        output_layer = self.layers[self.neat.output_layer_nb]
+
+        for node in input_layer:
+            genome.add_node(node.copy())
+        for node in output_layer:
+            genome.add_node(node.copy())
+
         for connection in self.connections:
             node_in = genome.get_node(connection.node_in.innovation_nb)
             node_out = genome.get_node(connection.node_out.innovation_nb)
@@ -40,7 +48,6 @@ class Genome:
         for node in self.nodes:
             node.output = 0
 
-    
 
     def get_node(self, innovation_nb):
         for node in self.nodes:
