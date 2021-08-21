@@ -180,3 +180,16 @@ class Genome:
 
     def crossover(self, gemone):
         pass
+
+
+    def __str__(self):
+        string = ''
+
+        for layer_nb in self.layers:
+            layer = self.layers[layer_nb]
+            string += f'layer {layer_nb}:\n'
+
+            for node in layer:
+                string += f'\t{node}\n'
+    
+        return string
