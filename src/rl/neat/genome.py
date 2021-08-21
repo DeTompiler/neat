@@ -122,8 +122,11 @@ class Genome:
                 if node_in.layer_nb > node_out.layer_nb:
                     node_in, node_out = node_out, node_in
                 
-                self.connections.append(ConnectionGene(node_in, node_out, enabled=True,
-                    weight_randomization_factor=self.neat.weight_randomization_factor))
+                connection = ConnectionGene(node_in, node_out, enabled=True,
+                    weight_randomization_factor=self.neat.weight_randomization_factor)
+                
+                node_in.connections.append(connection)
+                self.add_connection(connection)
                 
                 return
     
