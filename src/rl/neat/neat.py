@@ -66,7 +66,7 @@ class Neat:
                     weight_randomization_factor=self.weight_randomization_factor)
                 
                 input_node.connections.append(connection)
-                genome.add_sorted_connection(connection)
+                genome.add_connection(connection)
 
         genome.add_nodes(inputs)
         genome.add_nodes(outputs)

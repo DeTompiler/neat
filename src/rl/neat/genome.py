@@ -57,7 +57,7 @@ class Genome:
             self.add_node(node)
         
 
-    def add_sorted_connection(self, connection):
+    def add_connection(self, connection):
         for idx in range(len(self.connections)):
             if self.connections[idx].innovation_nb < connection.innovation_nb:
                 self.connections.insert(idx+1, connection)
