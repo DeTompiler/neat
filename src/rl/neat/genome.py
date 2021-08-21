@@ -47,7 +47,13 @@ class Genome:
         self.nodes.append(node)
 
         if not node.layer_nb in self.layers:
+            layer_nbs = list(self.layers.keys())
             self.layers[node.layer_nb] = deque([node])
+
+            for layer_nb in layer_nbs:
+                if layer_nb > node.layer_nb:
+                    self.layers.move_to_end(layer_nb)
+
         else:
             self.layers[node.layer_nb].append(node)
     
