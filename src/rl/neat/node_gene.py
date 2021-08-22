@@ -37,4 +37,5 @@ class NodeGene(Gene):
     def __str__(self):
         return (f'NodeGene[innovation_nb={self.innovation_nb}, '
         f'connections={[connection.node_out.innovation_nb for connection in self.connections]}, '
-        f'output={self.output}, activation={self.activation}, layer_nb={self.layer_nb}]')
+        f'output={self.output}, activation={self.activation.__name__ if self.activation is not None else None}, '
+        f'layer_nb={self.layer_nb}]')
