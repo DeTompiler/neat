@@ -77,25 +77,6 @@ class Genome:
         return self.neat.output_activation(self.layer_to_np_array(self.neat.output_layer_nb)).numpy()
 
 
-    def add_all(self, connection):
-        if self.connection_exists(connection.innovation_nb):
-            return
-
-        node_in = self.get_node(connection.node_in.innovation_nb)
-        node_out = self.get_node(connection.node_out.innovation_nb)
-
-        if node_in is None:
-            node_in = connection.node_in.copy()
-            self.add_node(node_in)
-        if node_out is None:
-            node_out = connection.node_out.copy()
-            self.add_node(node_out) 
-
-        copied_connection = connection.copy(node_in, node_out)
-        node_in.connections.append(copied_connection)
-        self.add_connection(copied_connection)
-
-
     def reset(self):
         self.fitness = 0.0
 
