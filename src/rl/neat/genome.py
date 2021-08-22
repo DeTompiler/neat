@@ -70,9 +70,9 @@ class Genome:
 
         output_layer = self.layers[self.neat.output_layer_nb]
         if len(output_layer) == 1:
-            return self.neat.output_activation(output_layer[0])
+            return self.neat.output_activation(output_layer[0].output).numpy()
         
-        return self.neat.output_activation(self.layer_to_np_array(self.neat.output_layer_nb))
+        return self.neat.output_activation(self.layer_to_np_array(self.neat.output_layer_nb)).numpy()
 
 
     def reset(self):
