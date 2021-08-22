@@ -50,7 +50,12 @@ class Genome:
 
         for node, input in zip(input_layer, inputs):
             node.output = input
-            
+
+
+    def layer_to_np_array(self, layer_nb):
+        layer = self.layers[layer_nb]     
+        return np.array([node.output for node in layer]) 
+
 
     def reset(self):
         for node in self.nodes:
