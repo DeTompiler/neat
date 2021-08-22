@@ -20,6 +20,11 @@ class NodeGene(Gene):
         connections = self.connections if copy_connections else deque()
 
         return NodeGene(self.innovation_nb, connections, self.output, self.activation, self.layer_nb)
+    
+
+    def apply_activation(self):
+        if self.activation is not None:
+            self.output = self.activation(self.output)
 
 
     def has_connection_to(self, node):
