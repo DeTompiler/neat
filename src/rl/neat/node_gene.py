@@ -8,17 +8,18 @@ class NodeGene(Gene):
         - index_in_layer may need to be used for visualization only
     '''
 
-    def __init__(self, innovation_nb, connections=None, output=0, layer_nb=0):
+    def __init__(self, innovation_nb, connections=None, output=0, activation=None, layer_nb=0):
         super().__init__(innovation_nb)
         self.connections = deque() if connections is None else connections
         self.output = output
+        self.activation = activation
         self.layer_nb = layer_nb
 
 
     def copy(self, copy_connections=False):
         connections = self.connections if copy_connections else deque()
 
-        return NodeGene(self.innovation_nb, connections, self.output, self.layer_nb)
+        return NodeGene(self.innovation_nb, connections, self.output, self.activation, self.layer_nb)
 
 
     def has_connection_to(self, node):
@@ -36,4 +37,4 @@ class NodeGene(Gene):
     def __str__(self):
         return (f'NodeGene[innovation_nb={self.innovation_nb}, '
         f'connections={[connection.node_out.innovation_nb for connection in self.connections]}, '
-        f'output={self.output}, layer_nb={self.layer_nb}]')
+        f'output={self.output}, activation={self.activation}, layer_nb={self.layer_nb}]')
