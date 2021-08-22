@@ -46,7 +46,7 @@ class Genome:
 
     def reset(self):
         for node in self.nodes:
-            node.output = 0
+            node.output = 0.0
 
 
     def get_node(self, innovation_nb):
