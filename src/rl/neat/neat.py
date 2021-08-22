@@ -2,6 +2,7 @@ from collections import deque
 from src.rl.neat.connection_gene import ConnectionGene
 from src.rl.neat.genome import Genome
 from src.rl.neat.node_gene import NodeGene
+from tensorflow.keras.activations import sigmoid, relu
 
 
 class Neat:
@@ -20,7 +21,9 @@ class Neat:
         self.c1 = kwargs.get('c1', 1.0)
         self.c2 = kwargs.get('c2', 1.0)
         self.c3 = kwargs.get('c3', 0.4)
-        
+
+        self.output_activation = kwargs.get('output_activation', sigmoid)
+        self.hidden_activation = kwargs.get('hidden_activation', relu)
 
         self.toggle_probability = kwargs.get('toggle_probability', 0.01)
         self.shift_probability = kwargs.get('shift_probability', 0.01)
