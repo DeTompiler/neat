@@ -238,6 +238,16 @@ class Genome:
         pass
 
 
+    def similar_fitness(self, genome):
+        if self.fitness == genome.fitness:
+            return True
+        
+        # g1 has better fitness than g2
+        g1, g2 = self, genome if self.fitness > genome.fitness else genome, self
+
+        return g2.fitness > (g1.fitness - g1.fitness * self.neat.similar_fitness_range)
+
+
     def __str__(self):
         string = ''
 
