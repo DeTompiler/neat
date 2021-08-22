@@ -61,7 +61,7 @@ class Neat:
         genome = Genome(self)
 
         inputs = [self.get_new_node(0.0, None, self.input_layer_nb) for index_in_layer in range(input_size)]
-        outputs = [self.get_new_node(0.0, self.output_activation, self.output_layer_nb) for index_in_layer in range(output_size)]
+        outputs = [self.get_new_node(0.0, None, self.output_layer_nb) for index_in_layer in range(output_size)]
         
         for input_node in inputs:
             for output_node in outputs:
