@@ -13,10 +13,12 @@ class Genome:
         self.layers = OrderedDict()
         self.nodes = deque()
         self.connections = deque()
+        self.fitness = 0.0
 
 
     def copy(self):
         genome = Genome(self.neat)
+        genome.fitness = self.fitness
 
         input_layer = self.layers[self.neat.input_layer_nb]
         output_layer = self.layers[self.neat.output_layer_nb]
@@ -76,6 +78,8 @@ class Genome:
 
 
     def reset(self):
+        self.fitness = 0.0
+
         for node in self.nodes:
             node.output = 0.0
 
