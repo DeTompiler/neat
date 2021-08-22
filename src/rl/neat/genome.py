@@ -44,6 +44,14 @@ class Genome:
         return genome
 
 
+    def assign_inputs(self, inputs):
+        input_layer = self.layers[self.neat.input_layer_nb]
+        assert len(inputs) == len(input_layer)
+
+        for node, input in zip(input_layer, inputs):
+            node.output = input
+            
+
     def reset(self):
         for node in self.nodes:
             node.output = 0.0
