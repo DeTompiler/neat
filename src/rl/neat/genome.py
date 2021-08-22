@@ -55,6 +55,24 @@ class Genome:
     def layer_to_np_array(self, layer_nb):
         layer = self.layers[layer_nb]     
         return np.array([node.output for node in layer]) 
+    
+
+    def forward(self, inputs):
+        self.assign_inputs(inputs)
+
+        for layer in self.layers.values():
+            for node in layer:
+                node.apply_activation()
+
+                for connection in node.connections:
+                    if connection.enabled:
+                        connection.node_out.output += connection.weight * node.output
+
+        output_layer = self.layers[self.neat.output_layer_nb]
+        if len(output_layer) == 1:
+            return self.neat.output_activation(output_layer[0])
+        
+        return self.neat.output_activation(self.layer_to_np_array(self.neat.output_layer_nb))
 
 
     def reset(self):
