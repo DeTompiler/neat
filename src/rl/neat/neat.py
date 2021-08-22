@@ -38,7 +38,7 @@ class Neat:
         self.output_layer_nb = kwargs.get('output_layer_nb', 256)
 
         self.node_innovation_nb = 0
-        self.minimal_genome = self.get_minimal_genome(self.input_size, self.output_size)
+        self.base_genome = self.create_base_genome(self.input_size, self.output_size)
         self.nodes = {}
 
 
@@ -57,7 +57,7 @@ class Neat:
         return NodeGene(self.node_innovation_nb, output=output, activation=activation, layer_nb=layer_nb)
     
 
-    def get_minimal_genome(self, input_size, output_size):
+    def create_base_genome(self, input_size, output_size):
         genome = Genome(self)
 
         inputs = [self.get_new_node(0, None, self.input_layer_nb) for index_in_layer in range(input_size)]
