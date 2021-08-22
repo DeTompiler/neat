@@ -96,6 +96,14 @@ class Genome:
         return self.get_node(innovation_nb) is not None
 
 
+    def connection_exists(self, innovation_nb):
+        for connection in self.connections:
+            if connection.innovation_nb == innovation_nb:
+                return True
+        
+        return False
+
+
     def add_node(self, node):
         self.nodes.append(node)
 
@@ -234,7 +242,7 @@ class Genome:
         return (self.neat.c1 * excess_genes / genes_nb) + (self.neat.c2 * disjoint_genes / genes_nb) + self.neat.c3 * avg_weight_diff
 
 
-    def crossover(self, gemone):
+    def crossover(self, genome):
         pass
 
 
