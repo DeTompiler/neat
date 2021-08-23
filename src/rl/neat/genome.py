@@ -269,7 +269,49 @@ class Genome:
 
 
     def crossover(self, genome):
-        pass
+        g1, g2 = self, genome if self.fitness >= genome.fitness else genome, self
+        similar_fitness = self.similar_fitness(genome)
+
+        idx1, idx2 = 0, 0
+        len1, len2 = len(g1.connections), len(g2.connections)
+
+        offspring = self.neat.base_genome.copy()
+
+        while idx1 < len1 and idx2 < len2:
+            con1 = g1.connections[idx1]
+            con2 = g2.connections[idx2]
+
+            if con1.innovation_nb == con2.innovation_nb and not offspring.connection_exists(con1.innovation_nb):
+                con = con1 if np.random.rand() > 0.5 else con2
+
+                offspring.add_connection(con, add_nodes=True, copy=False, check_existence=True)
+
+                idx1 += 1
+                idx2 += 1
+
+            elif con1.innovation_nb > con2.innovation_nb:
+                # disjoint of g2
+                if similar_fitness:
+                    offspring.add_connection(con2, add_nodes=True, copy=False, check_existence=True)
+                
+                idx2 += 1
+            else:
+                # disjoint of g1
+                offspring.add_connection(con1, add_nodes=True, copy=False, check_existence=True)
+                idx1 += 1
+
+        
+        for idx in range(idx1, len1):
+            con = g1.connections[idx]
+            offspring.add_connection(con, add_nodes=True, copy=False, check_existence=True)
+        
+        if similar_fitness:
+            for idx in range(idx2, len2):
+                con = g2.connections[idx]
+                offspring.add_connection(con, add_nodes=True, copy=False, check_existence=True)
+
+
+        return offspring
 
 
     def similar_fitness(self, genome):
