@@ -1,5 +1,6 @@
 from collections import deque, OrderedDict
 import numpy as np
+from numpy.lib.function_base import copy
 from src.rl.neat.connection_gene import ConnectionGene
 from src.rl.neat.node_gene import NodeGene
 
@@ -16,7 +17,7 @@ class Genome:
         self.fitness = 0.0
 
 
-    def copy(self):
+    def copy(self, copy_connections=True):
         genome = Genome(self.neat)
         genome.fitness = self.fitness
 
@@ -28,20 +29,21 @@ class Genome:
         for node in output_layer:
             genome.add_node(node.copy())
 
-        for connection in self.connections:
-            node_in = genome.get_node(connection.node_in.innovation_nb)
-            node_out = genome.get_node(connection.node_out.innovation_nb)
+        if copy_connections:
+            for connection in self.connections:
+                node_in = genome.get_node(connection.node_in.innovation_nb)
+                node_out = genome.get_node(connection.node_out.innovation_nb)
 
-            if node_in is None:
-                node_in = connection.node_in.copy()
-                genome.add_node(node_in)
-            if node_out is None:
-                node_out = connection.node_out.copy()
-                genome.add_node(node_out)
-            
-            copied_connection = connection.copy(node_in, node_out)
-            node_in.connections.append(copied_connection)
-            genome.add_connection(copied_connection)
+                if node_in is None:
+                    node_in = connection.node_in.copy()
+                    genome.add_node(node_in)
+                if node_out is None:
+                    node_out = connection.node_out.copy()
+                    genome.add_node(node_out)
+                
+                copied_connection = connection.copy(node_in, node_out)
+                node_in.connections.append(copied_connection)
+                genome.add_connection(copied_connection)
 
         return genome
 
