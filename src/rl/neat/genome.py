@@ -130,12 +130,26 @@ class Genome:
             self.add_node(node, copy, check_existence)
         
 
-    def add_connection(self, connection, copy=False, check_existence=False):
+    def add_connection(self, connection, add_nodes=False, copy=False, check_existence=False):
         if check_existence and self.connection_exists(connection.innovation_nb):
             return
-        
+
         if copy:
             connection = connection.copy()
+        
+        elif add_nodes:
+            node_in = self.get_node(connection.node_in.innovation_nb)
+            node_out = self.get_node(connection.node_out.innovation_nb)
+
+            if node_in is None:
+                node_in = connection.node_in.copy()
+                self.add_node(node_in)
+            if node_out is None:
+                node_out = connection.node_out.copy()
+                self.add_node(node_out)
+            
+            connection = connection.copy(node_in, node_out)
+            node_in.connections.append(connection)
 
         for idx in range(len(self.connections)):
             if self.connections[idx].innovation_nb < connection.innovation_nb:
