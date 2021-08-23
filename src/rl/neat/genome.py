@@ -247,7 +247,7 @@ class Genome:
 
 
     def distance(self, genome):
-        g1, g2 = self, genome if self.connections[-1].innovation_nb > genome.connections[-1].innovation_nb else genome, self
+        g1, g2 = (self, genome) if self.connections[-1].innovation_nb > genome.connections[-1].innovation_nb else (genome, self)
 
         idx1 = 0
         idx2 = 0
@@ -285,7 +285,7 @@ class Genome:
 
 
     def crossover(self, genome):
-        g1, g2 = self, genome if self.fitness >= genome.fitness else genome, self
+        g1, g2 = (self, genome) if self.fitness >= genome.fitness else (genome, self)
         similar_fitness = self.similar_fitness(genome)
 
         idx1, idx2 = 0, 0
