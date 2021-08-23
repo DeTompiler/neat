@@ -104,9 +104,12 @@ class Genome:
         return False
 
 
-    def add_node(self, node, check_existence=False):
+    def add_node(self, node, copy=False, check_existence=False):
         if check_existence and self.node_exists(node.innovation_nb):
             return
+
+        if copy:
+            node = node.copy()
 
         self.nodes.append(node)
 
@@ -122,14 +125,17 @@ class Genome:
             self.layers[node.layer_nb].append(node)
     
 
-    def add_nodes(self, nodes, check_existence=False):
+    def add_nodes(self, nodes, copy=False, check_existence=False):
         for node in nodes:
-            self.add_node(node, check_existence)
+            self.add_node(node, copy, check_existence)
         
 
-    def add_connection(self, connection, check_existence=False):
+    def add_connection(self, connection, copy=False, check_existence=False):
         if check_existence and self.connection_exists(connection.innovation_nb):
             return
+        
+        if copy:
+            connection = connection.copy()
 
         for idx in range(len(self.connections)):
             if self.connections[idx].innovation_nb < connection.innovation_nb:
