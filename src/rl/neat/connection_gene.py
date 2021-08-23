@@ -53,5 +53,5 @@ class ConnectionGene(Gene):
 
 
     def __str__(self):
-        return f'ConnectionGene[node_in={self.node_in}, node_out={self.node_out}, weight={self.weight}, \
-            enabled={self.enabled}, innovation_nb={self.innovation_nb}]'
+        return (f'ConnectionGene[innovation_nb={self.innovation_nb}, node_in={self.node_in}, '
+        f'node_out={self.node_out}, weight={self.weight}, enabled={self.enabled}]')
