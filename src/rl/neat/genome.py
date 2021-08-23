@@ -335,9 +335,9 @@ class Genome:
             return True
         
         # g1 has better fitness than g2
-        g1, g2 = self, genome if self.fitness > genome.fitness else genome, self
+        g1, g2 = (self, genome) if self.fitness > genome.fitness else (genome, self)
 
-        return g2.fitness > (g1.fitness - g1.fitness * self.neat.similar_fitness_range)
+        return g2.fitness > (g1.fitness - g1.fitness * self.neat.similar_fitness_range) < g2.fitness
 
 
     def __str__(self):
