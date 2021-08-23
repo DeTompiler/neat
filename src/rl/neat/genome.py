@@ -227,12 +227,22 @@ class Genome:
     def add_random_node(self):
         connection = self.random_connection()
 
-        new_node = self.neat.get_node(self, connection)
-
-        self.connections.append(ConnectionGene(connection.node_in, new_node, weight=1, enabled=True))
-        self.connections.append(ConnectionGene(new_node, connection.node_out, connection.weight, enabled=connection.enabled))
+        # new node
+        new_node = self.neat.get_node(connection)
         
-        self.nodes.append(new_node)
+        # new connections
+        con1 = ConnectionGene(connection.node_in, new_node, weight=1, enabled=True)
+        con2 = ConnectionGene(new_node, connection.node_out, connection.weight, enabled=connection.enabled)
+        
+        # remove old connections
+        connection.node_in.remove_connection_to(connection.node_out)
+
+        connection.node_in.connections.append(con1)
+        new_node.connections.append(con2)
+        self.add_connection(con1)
+        self.add_connection(con2)        
+        self.add_node(new_node)
+
         self.connections.remove(connection)
 
 
