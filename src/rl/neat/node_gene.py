@@ -36,7 +36,7 @@ class NodeGene(Gene):
 
 
     def __eq__(self, node_gene):
-        return self.innovation_nb == node_gene.innovation_number
+        return self.innovation_nb == node_gene.innovation_nb
         
 
     def __str__(self):
