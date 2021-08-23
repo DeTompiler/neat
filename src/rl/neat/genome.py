@@ -211,7 +211,7 @@ class Genome:
             if node_in.layer_nb > node_out.layer_nb:
                 node_in, node_out = node_out, node_in
 
-            if node_in.layer_nb != node_out.layer_nb and not node_in.has_connection_to(node_out):
+            if not node_in.has_connection_to(node_out):
                 if node_in.layer_nb > node_out.layer_nb:
                     node_in, node_out = node_out, node_in
                 
