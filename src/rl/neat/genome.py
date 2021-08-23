@@ -153,11 +153,12 @@ class Genome:
             connection = connection.copy(node_in, node_out)
             node_in.connections.append(connection)
 
+
         for idx in range(len(self.connections)):
-            if self.connections[idx].innovation_nb < connection.innovation_nb:
-                self.connections.insert(idx+1, connection)
+            if connection.innovation_nb < self.connections[idx].innovation_nb:
+                self.connections.insert(idx, connection)
                 return
-        
+
         self.connections.append(connection)
 
 
