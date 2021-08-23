@@ -34,6 +34,18 @@ class NodeGene(Gene):
 
         return False
 
+    
+    def remove_connection_to(self, node):
+        r_con = None
+
+        for connection in self.connections:
+            if connection.node_out == node:
+                r_con = connection
+                break
+        
+        if r_con is not None:
+            self.connections.remove(r_con)
+
 
     def __eq__(self, node_gene):
         return self.innovation_nb == node_gene.innovation_nb
