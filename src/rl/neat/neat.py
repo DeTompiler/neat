@@ -14,7 +14,7 @@ class Neat:
     '''
 
 
-    def __init__(self, input_size, output_size, **kwargs):
+    def __init__(self, input_size, output_size, population, **kwargs):
         self.input_size = input_size
         self.output_size = output_size
 
@@ -41,8 +41,9 @@ class Neat:
         self.output_layer_nb = kwargs.get('output_layer_nb', 256)
 
         self.node_innovation_nb = 0
-        self.base_genome = self.create_base_genome(self.input_size, self.output_size)
         self.nodes = {}
+        self.base_genome = self.create_base_genome(self.input_size, self.output_size)
+        self.genomes = [self.base_genome.copy() for idx in range(population)]
 
 
     def get_node(self, connection):
