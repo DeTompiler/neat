@@ -2,6 +2,7 @@ from collections import deque
 from src.rl.neat.connection_gene import ConnectionGene
 from src.rl.neat.genome import Genome
 from src.rl.neat.node_gene import NodeGene
+from src.rl.neat.species import Species
 from tensorflow.keras.activations import sigmoid, relu
 
 
@@ -44,6 +45,7 @@ class Neat:
         self.nodes = {}
         self.base_genome = self.create_base_genome(self.input_size, self.output_size)
         self.genomes = [self.base_genome.copy() for idx in range(population)]
+        self.species = deque()
 
 
     def get_node(self, connection):
@@ -64,6 +66,19 @@ class Neat:
     def mutate_all(self):
         for genome in self.genomes:
             genome.mutate()
+    
+
+    def generate_species(self):
+        for genome in self.genomes:
+            found = False
+
+            for species in self.species:
+                if species.add_genome(genome, check_compatibility=True):
+                    found = True
+                    break
+            
+            if not found:
+                self.species.append(Species(genome))
 
 
     def create_base_genome(self, input_size, output_size):
