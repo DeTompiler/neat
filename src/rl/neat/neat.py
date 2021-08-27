@@ -25,6 +25,8 @@ class Neat:
         self.output_activation = kwargs.get('output_activation', sigmoid)
         self.hidden_activation = kwargs.get('hidden_activation', relu)
 
+        self.genome_distance_threshold = kwargs.get('genome_distance_threshold', 3.0)
+
         self.toggle_probability = kwargs.get('toggle_probability', 0.01)
         self.shift_probability = kwargs.get('shift_probability', 0.01)
         self.random_probability = kwargs.get('random_probability', 0.01)
