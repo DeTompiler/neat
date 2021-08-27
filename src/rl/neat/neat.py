@@ -108,6 +108,11 @@ class Neat:
             species.add_genome(genome, check_compatibility=False)
 
 
+    def adjust_genomes_fitness(self):
+        for species in self.species:
+            species.adjust_fitness()
+
+
     def random_species(self, fitness_prob=True):
         if not fitness_prob:
             return random.choice(self.species)
