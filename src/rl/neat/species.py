@@ -1,5 +1,6 @@
 from collections import deque
 import math
+import random
 
 
 class Species:
@@ -40,3 +41,10 @@ class Species:
         
         for idx in range(size):
             genome = self.genomes.pop()
+        
+
+    def random_genome(self, fitness_prob=True):
+        if not fitness_prob:
+            return random.choice(self.genomes)
+
+        return random.choices(self.genomes, weights=[genome.fitness for genome in self.genomes])[0]

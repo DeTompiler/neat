@@ -4,6 +4,7 @@ from src.rl.neat.genome import Genome
 from src.rl.neat.node_gene import NodeGene
 from src.rl.neat.species import Species
 from tensorflow.keras.activations import sigmoid, relu
+import random
 
 
 class Neat:
@@ -96,6 +97,11 @@ class Neat:
                 remaining_species.append(species)
 
         self.species = remaining_species
+    
+
+    def reproduce(self):
+        for idx in range(len(self.genomes), self.population):
+
 
 
     def create_base_genome(self, input_size, output_size):
