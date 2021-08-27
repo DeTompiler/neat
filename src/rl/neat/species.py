@@ -55,14 +55,11 @@ class Species:
         return self.random_genome().crossover(self.random_genome())
 
     
-    def adjust_fitness(self, compute_fitness=False):
+    def adjust_fitness(self):
         species_size = self.size()
 
         for genome in self.genomes:
             genome.fitness /= species_size
-
-        if compute_fitness:
-            self.compute_fitness()
     
 
     def compute_fitness(self):
