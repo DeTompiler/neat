@@ -90,7 +90,7 @@ class Neat:
             if sort_species:
                 species.sort()
 
-            species.kill(self.kill_worst)
+            species.kill(self.kill_worst, kill_in_neat=True)
 
             if species.size() > 0:
                 remaining_species.append(species)
