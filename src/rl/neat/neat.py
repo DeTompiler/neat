@@ -80,6 +80,11 @@ class Neat:
             
             if not found:
                 self.species.append(Species(genome))
+    
+
+    def kill_worst_genomes(self):
+        for species in self.species:
+            species.kill(self.kill_worst)
 
 
     def create_base_genome(self, input_size, output_size):
