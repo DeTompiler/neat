@@ -112,6 +112,14 @@ class Neat:
         for species in self.species:
             species.adjust_fitness()
             species.compute_fitness()
+    
+
+    def evolve(self):
+        self.generate_species()
+        self.adjust_genomes_fitness()
+        self.kill_worst_genomes(sort_species=True)
+        self.reproduce()
+        self.mutate_all()
 
 
     def random_species(self, fitness_prob=True):
