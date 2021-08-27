@@ -82,10 +82,13 @@ class Neat:
                 self.species.append(Species(genome))
     
 
-    def kill_worst_genomes(self):
+    def kill_worst_genomes(self, sort_species=False):
         remaining_species = deque()
 
         for species in self.species:
+            if sort_species:
+                species.sort()
+
             species.kill(self.kill_worst)
 
             if species.size() > 0:
