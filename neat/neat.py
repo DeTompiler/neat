@@ -1,8 +1,8 @@
 from collections import deque
-from src.rl.neat.connection_gene import ConnectionGene
-from src.rl.neat.genome import Genome
-from src.rl.neat.node_gene import NodeGene
-from src.rl.neat.species import Species
+from neat.connection_gene import ConnectionGene
+from neat.genome import Genome
+from neat.node_gene import NodeGene
+from neat.species import Species
 from tensorflow.keras.activations import sigmoid, relu
 import random
 

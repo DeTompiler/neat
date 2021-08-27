@@ -1,8 +1,8 @@
 from collections import deque, OrderedDict
 import numpy as np
 from numpy.lib.function_base import copy
-from src.rl.neat.connection_gene import ConnectionGene
-from src.rl.neat.node_gene import NodeGene
+from neat.connection_gene import ConnectionGene
+from neat.node_gene import NodeGene
 
 
 class Genome:
