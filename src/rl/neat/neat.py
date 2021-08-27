@@ -18,6 +18,7 @@ class Neat:
     def __init__(self, input_size, output_size, population, **kwargs):
         self.input_size = input_size
         self.output_size = output_size
+        self.population = population
 
         self.c1 = kwargs.get('c1', 1.0)
         self.c2 = kwargs.get('c2', 1.0)
