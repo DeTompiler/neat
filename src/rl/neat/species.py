@@ -48,3 +48,7 @@ class Species:
             return random.choice(self.genomes)
 
         return random.choices(self.genomes, weights=[genome.fitness for genome in self.genomes])[0]
+    
+
+    def breed(self):
+        return self.random_genome().crossover(self.random_genome())
