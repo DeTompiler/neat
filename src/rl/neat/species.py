@@ -7,6 +7,10 @@ class Species:
         self.representative = representative
         self.genomes = deque([representative])
 
+    
+    def size(self):
+        return len(self.genomes)
+
 
     def compatible(self, genome):
         return self.representative.distance(genome) <= self.representative.neat.genome_distance_threshold
