@@ -52,3 +52,10 @@ class Species:
 
     def breed(self):
         return self.random_genome().crossover(self.random_genome())
+
+    
+    def adjust_fitness(self):
+        species_size = self.size()
+
+        for genome in self.genomes:
+            genome.fitness /= species_size
