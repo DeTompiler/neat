@@ -101,7 +101,14 @@ class Neat:
 
     def reproduce(self):
         for idx in range(len(self.genomes), self.population):
+            random.choices()
 
+
+    def random_species(self, fitness_prob=True):
+        if not fitness_prob:
+            return random.choice(self.species)
+        
+        return random.choices(self.species, weights=[species.fitness for species in self.species])[0]
 
 
     def create_base_genome(self, input_size, output_size):
