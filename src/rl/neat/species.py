@@ -28,8 +28,15 @@ class Species:
         self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
 
 
-    def kill(self, precentage):
+    def kill(self, precentage, kill_in_neat=False):
         size = math.ceil(len(self.genomes) * precentage)
 
+        if kill_in_neat:
+            for idx in range(size):
+                genome = self.genomes.pop()
+                genome.neat.genomes.remove(genome)
+            
+            return
+        
         for idx in range(size):
-            self.genomes.pop()
+            genome = self.genomes.pop()
