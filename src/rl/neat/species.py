@@ -1,4 +1,5 @@
 from collections import deque
+import math
 
 
 class Species:
@@ -23,3 +24,8 @@ class Species:
         self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
 
 
+    def kill(self, precentage):
+        size = math.ceil(len(self.genomes) * precentage)
+
+        for idx in range(size):
+            self.genomes.pop()
