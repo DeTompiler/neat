@@ -101,7 +101,11 @@ class Neat:
 
     def reproduce(self):
         for idx in range(len(self.genomes), self.population):
-            random.choices()
+            species = self.random_species()
+            genome = species.breed()
+
+            self.genomes.append(genome)
+            species.add_genome(genome, check_compatibility=False)
 
 
     def random_species(self, fitness_prob=True):
