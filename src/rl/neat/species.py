@@ -7,6 +7,7 @@ class Species:
     def __init__(self, representative):
         self.representative = representative
         self.genomes = deque([representative])
+        self.fitness = None
 
     
     def size(self):
@@ -59,3 +60,10 @@ class Species:
 
         for genome in self.genomes:
             genome.fitness /= species_size
+    
+
+    def compute_fitness(self):
+        self.fitness = 0
+
+        for genome in self.genomes:
+            self.fitness += genome.fitness
