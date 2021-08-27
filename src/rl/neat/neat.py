@@ -61,6 +61,11 @@ class Neat:
         return NodeGene(self.node_innovation_nb, output=output, activation=activation, layer_nb=layer_nb)
     
 
+    def mutate_all(self):
+        for genome in self.genomes:
+            genome.mutate()
+
+
     def create_base_genome(self, input_size, output_size):
         genome = Genome(self)
 
