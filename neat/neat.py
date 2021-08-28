@@ -1,4 +1,5 @@
 from collections import deque
+import pickle
 from neat.connection_gene import ConnectionGene
 from neat.genome import Genome
 from neat.node_gene import NodeGene
@@ -143,6 +144,11 @@ class Neat:
             return random.choice(self.species)
         
         return random.choices(self.species, weights=[species.fitness for species in self.species])[0]
+
+
+    def load_genome(self, path):
+        with open(path, 'rb') as file:
+            return pickle.load(file)
 
 
     def create_base_genome(self, input_size, output_size):
