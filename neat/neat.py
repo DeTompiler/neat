@@ -122,6 +122,10 @@ class Neat:
         self.kill_worst_genomes(sort_species=True)
         self.reproduce()
         self.mutate_all()
+    
+
+    def sort_genomes(self):
+        self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness)
 
 
     def random_species(self, fitness_prob=True):
