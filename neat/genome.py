@@ -3,6 +3,7 @@ import numpy as np
 from numpy.lib.function_base import copy
 from neat.connection_gene import ConnectionGene
 from neat.node_gene import NodeGene
+import pickle
 
 
 class Genome:
@@ -354,3 +355,8 @@ class Genome:
                 string += f'\t{node}\n'
     
         return string
+    
+
+    def save(self, filename='genome.cfg'):
+        with open(filename, 'w+') as file:
+            pickle.dump(self, file)
