@@ -125,7 +125,17 @@ class Neat:
     
 
     def sort_genomes(self):
-        self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness)
+        self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
+    
+
+    def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
+        if sort:
+            self.sort_genomes()
+        
+        if top_one_as_genome and top == 1:
+            return self.genomes[0]
+        
+        return [self.genomes[idx] for idx in range(top)]
 
 
     def random_species(self, fitness_prob=True):
