@@ -357,6 +357,6 @@ class Genome:
         return string
     
 
-    def save(self, filename='genome.cfg'):
-        with open(filename, 'w+') as file:
+    def save(self, path='genome.cfg'):
+        with open(path, 'wb') as file:
             pickle.dump(self, file)
