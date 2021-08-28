@@ -139,6 +139,20 @@ class Neat:
         return [self.genomes[idx] for idx in range(top)]
 
 
+    def save_best_genomes(self, top=1, sort=False, filepaths=[]):
+        if sort:
+            self.sort_genomes()
+        
+        if len(filepaths) == 0:
+            for idx in range(top):
+                self.genomes[idx].save(path=f'genome-{idx+1}.cfg')
+            
+            return
+        
+        for idx in range(top):
+            self.genomes[idx].save(path=filepaths[idx])
+
+
     def random_species(self, fitness_prob=True):
         if not fitness_prob:
             return random.choice(self.species)
