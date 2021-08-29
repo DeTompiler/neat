@@ -28,7 +28,7 @@ class GenerationTermination():
         self.stop_at = stop_at
 
 
-    def __call__(self, neat, curr_generation):
+    def __call__(self, curr_generation):
         return curr_generation >= self.stop_at
 
 
