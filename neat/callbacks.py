@@ -1,7 +1,7 @@
 import os.path
 
 
-class GenomeSavingCallback():
+class GenomeSaving():
     def __init__(self, population, top=1, override=True, dir='', filenames=[]):
         self.top = top if top > 0 else population
         self.override = override
