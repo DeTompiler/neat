@@ -12,10 +12,7 @@ class GenomeSaving():
         [os.path.join(dir, f'genome-{idx}.{Genome.FILE_EXT}' if self.override else f'genome-{idx}') for idx in range(top)]
 
 
-    def __call__(self, neat, generation, sort=False):
-        if sort:
-            neat.sort_genomes()
-        
+    def __call__(self, neat, generation):
         if self.override:
             for idx in range(self.top):
                 neat.genomes[idx].save(path=self.filepaths[idx])
@@ -41,25 +38,13 @@ class FitnessTermination():
         self.top = top
     
 
-    def __call__(self, neat, sorted=False):
-        if sorted:
-            for idx in range(self.top):
-                if neat.genomes[idx].fitness < self.termination_fitness:
-                    return False
-        
-            return True
-        
-        count = 0
-
-        for genome in neat.genomes:
-            if genome.fitness >= self.termination_fitness:
-                count += 1
-
-                if count == self.top:
-                    return True
-        
-        return False
-
+    def __call__(self, neat):
+        for idx in range(self.top):
+            if neat.genomes[idx].fitness < self.termination_fitness:
+                return False
+    
+        return True
+    
 
 class TimeTermination():
     def __init__(self, hours, minutes=0, seconds=0):
@@ -79,10 +64,7 @@ class FileLogger():
         self.data = deque()
 
     
-    def __call__(self, neat, generation, sort=False):
-        if sort:
-            neat.sort_genomes()
-        
+    def __call__(self, neat, generation):
         self.data.append(f'Gen {generation},{",".join([genome.fitness for genome in neat.genomes])}\n')
         
         with open(self.filepath, 'w+') as file:
