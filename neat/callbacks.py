@@ -1,6 +1,6 @@
 from neat.genome import Genome
 import os.path
-from neat.genome import Genome
+import time
 
 
 class GenomeSaving():
@@ -61,8 +61,15 @@ class FitnessTermination():
 
 
 class TimeTermination():
-    def __init__(self):
-        pass
+    def __init__(self, hours, minutes=0, seconds=0):
+        self.run_time = hours * 3600 + minutes * 60 + seconds
+
+        self.start_time = time.perf_counter()
+
+
+    def __call__(self):
+        return (time.perf_counter() - self.start_time) >= self.run_time
+
 
 
 
