@@ -155,6 +155,11 @@ class Neat:
         for genome in self.genomes:
             genome.reset_fitness()
 
+    
+    def add_fitness(self, scores):
+        for genome, score in zip(self.genomes, scores):
+            genome.fitness += score
+
 
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
         if sort:
