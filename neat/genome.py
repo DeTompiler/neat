@@ -83,12 +83,9 @@ class Genome:
         return self.neat.output_activation(self.layer_to_np_array(self.neat.output_layer_nb)).numpy()
 
 
-    def reset(self):
+    def reset_fitness(self):
         self.fitness = 0.0
-
-        for node in self.nodes:
-            node.output = 0.0
-
+        
 
     def reset_nodes(self):
         for node in self.nodes:
