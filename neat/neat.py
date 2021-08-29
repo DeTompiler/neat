@@ -137,6 +137,16 @@ class Neat:
             predictions[idx] = genome.forward(inputs[idx])
         
         return predictions
+    
+
+    def reset_all_nodes(self):
+        for genome in self.genomes:
+            genome.reset_nodes()
+        
+
+    def reset_all_fitness(self):
+        for genome in self.genomes:
+            genome.reset_fitness()
 
 
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
