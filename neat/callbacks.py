@@ -1,6 +1,7 @@
 from neat.genome import Genome
 import os.path
 import time
+from collections import deque
 
 
 class GenomeSaving():
@@ -71,7 +72,18 @@ class TimeTermination():
         return (time.perf_counter() - self.start_time) >= self.run_time
 
 
+class FileLogger():
+    def __init__(self, filepath, population, top=1):
+        self.filepath = filepath
+        self.top = top if top is not None else population
+        self.data = deque()
 
-
-
-
+    
+    def __call__(self, neat, generation, sort=False):
+        if sort:
+            neat.sort_genomes()
+        
+        self.data.append(f'Gen {generation},{",".join([genome.fitness for genome in neat.genomes])}\n')
+        
+        with open(self.filepath, 'w+') as file:
+            file.writelines(self.data)
