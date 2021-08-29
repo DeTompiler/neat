@@ -130,11 +130,12 @@ class Neat:
         self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
     
 
-    def forward_all(self, inputs):
+    def forward_all(self, inputs, genomes_alive):
         predictions = np.empty(shape=(self.population, self.output_size))
 
         for idx, genome in enumerate(self.genomes):
-            predictions[idx] = genome.forward(inputs[idx])
+            if genomes_alive[idx]:
+                predictions[idx] = genome.forward(inputs[idx])
         
         return predictions
     
