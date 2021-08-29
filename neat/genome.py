@@ -9,6 +9,9 @@ import pickle
 class Genome:
     ''' Genome class, contains the nodes and connection of the neural network
     '''
+    
+    FILE_EXT = 'gnc' # gnc - genome network configuration
+
 
     def __init__(self, neat):
         self.neat = neat
@@ -357,6 +360,6 @@ class Genome:
         return string
     
 
-    def save(self, path='genome.cfg'):
+    def save(self, path=f'genome.{FILE_EXT}'):
         with open(path, 'wb') as file:
             pickle.dump(self, file)

@@ -1,4 +1,6 @@
+from neat.genome import Genome
 import os.path
+from neat.genome import Genome
 
 
 class GenomeSaving():
@@ -6,7 +8,7 @@ class GenomeSaving():
         self.top = top if top > 0 else population
         self.override = override
         self.filepaths = [os.path.join(dir, filename) for filename in filenames] if len(filenames) == top else \
-        [os.path.join(dir, f'genome-{idx}.cfg' if self.override else f'genome-{idx}') for idx in range(top)]
+        [os.path.join(dir, f'genome-{idx}.{Genome.FILE_EXT}' if self.override else f'genome-{idx}') for idx in range(top)]
 
 
     def __call__(self, neat, generation, sort=False):
@@ -20,7 +22,7 @@ class GenomeSaving():
             return
 
         for idx in range(self.top):
-            neat.genomes[idx].save(path=self.filepaths[idx] + f'-gen-{generation}.cfg')
+            neat.genomes[idx].save(path=self.filepaths[idx] + f'-gen-{generation}.{Genome.FILE_EXT}')
 
 
 class GenerationTermination():

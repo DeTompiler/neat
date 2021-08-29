@@ -145,7 +145,7 @@ class Neat:
         
         if len(filepaths) == 0:
             for idx in range(top):
-                self.genomes[idx].save(path=f'genome-{idx+1}.cfg')
+                self.genomes[idx].save(path=f'genome-{idx+1}.{Genome.FILE_EXT}')
             
             return
         
