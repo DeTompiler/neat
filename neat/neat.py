@@ -1,4 +1,5 @@
 from collections import deque
+from neat.callbacks import TerminationCallback
 import pickle
 from neat.connection_gene import ConnectionGene
 from neat.genome import Genome
@@ -7,6 +8,7 @@ from neat.species import Species
 from tensorflow.keras.activations import sigmoid, relu
 import random
 import numpy as np
+from neat.callbacks import TerminationCallback
 
 
 class Neat:
@@ -175,6 +177,37 @@ class Neat:
             states = next_states
 
             done = True in genomes_alive
+
+
+    def fit(self, env, single_input, callbacks=[]):
+        termination_callbacks = []
+        other_callbacks = []
+
+        for callback in callbacks:
+            if isinstance(callback, TerminationCallback):
+                termination_callbacks.append(callback)
+            else:
+                other_callbacks.append(callback)
+        
+        generation = 1
+        callback_args = {'neat':self, 'generation':generation}
+        terminate = False
+
+        while not terminate:
+            callback_args['generation'] = generation
+
+            self.run_env(env, single_input)
+
+            for t_callback in termination_callbacks:
+                if t_callback(callback_args):
+                    break
+                
+            for callback in other_callbacks:
+                callback(callback_args)
+            
+            self.evolve()
+            self.reset_all_fitness()
+            generation += 1
 
 
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
