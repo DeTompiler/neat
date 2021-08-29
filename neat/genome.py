@@ -90,6 +90,11 @@ class Genome:
             node.output = 0.0
 
 
+    def reset_nodes(self):
+        for node in self.nodes:
+            node.output = 0.0
+
+
     def get_node(self, innovation_nb):
         for node in self.nodes:
             if node.innovation_nb == innovation_nb:
