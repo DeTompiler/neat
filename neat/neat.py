@@ -161,6 +161,22 @@ class Neat:
             genome.fitness += score
 
 
+    def run_env(self, env, single_input=False):
+        states = env.reset()
+
+        done = False
+        genomes_alive = [True for genome in self.genomes]
+
+        while not done:
+            next_states, scores, genomes_alive = env.step(self.forward_all(states, genomes_alive, single_input))
+
+            self.add_fitness(scores)
+            self.reset_all_nodes()
+            states = next_states
+
+            done = True in genomes_alive
+
+
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
         if sort:
             self.sort_genomes()
