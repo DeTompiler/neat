@@ -6,7 +6,7 @@ from collections import deque
 
 class GenomeSaving():
     def __init__(self, population, top=1, override=True, dir='', filenames=[]):
-        self.top = top if top > 0 else population
+        self.top = top if top is not None else population
         self.override = override
         self.filepaths = [os.path.join(dir, filename) for filename in filenames] if len(filenames) == top else \
         [os.path.join(dir, f'genome-{idx}.{Genome.FILE_EXT}' if self.override else f'genome-{idx}') for idx in range(top)]
