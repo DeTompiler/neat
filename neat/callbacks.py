@@ -26,43 +26,6 @@ class GenomeSaving():
             neat.genomes[idx].save(path=self.filepaths[idx] + f'-gen-{generation}.{Genome.FILE_EXT}')
 
 
-class GenerationTermination():
-    def __init__(self, stop_at):
-        self.stop_at = stop_at
-
-
-    def __call__(self, dict_args):
-        generation = dict_args['generation']
-        return generation >= self.stop_at
-
-
-class FitnessTermination():
-    def __init__(self, termination_fitness, top=1):
-        self.termination_fitness = termination_fitness
-        self.top = top
-    
-
-    def __call__(self, dict_args):
-        neat = dict_args['neat']
-
-        for idx in range(self.top):
-            if neat.genomes[idx].fitness < self.termination_fitness:
-                return False
-    
-        return True
-    
-
-class TimeTermination():
-    def __init__(self, hours, minutes=0, seconds=0):
-        self.run_time = hours * 3600 + minutes * 60 + seconds
-
-        self.start_time = time.perf_counter()
-
-
-    def __call__(self, dict_args):
-        return (time.perf_counter() - self.start_time) >= self.run_time
-
-
 class FileLogger():
     def __init__(self, filepath, population, top=1):
         self.filepath = filepath
@@ -78,3 +41,51 @@ class FileLogger():
         
         with open(self.filepath, 'w+') as file:
             file.writelines(self.data)
+
+
+
+class TerminationCallback:
+    def __init__(self):
+        raise NotImplementedError()
+    
+
+    def __call__(self):
+        raise NotImplementedError()
+
+
+class GenerationTermination(TerminationCallback):
+    def __init__(self, stop_at):
+        self.stop_at = stop_at
+
+
+    def __call__(self, dict_args):
+        generation = dict_args['generation']
+        return generation >= self.stop_at
+
+
+class FitnessTermination(TerminationCallback):
+    def __init__(self, termination_fitness, top=1):
+        self.termination_fitness = termination_fitness
+        self.top = top
+    
+
+    def __call__(self, dict_args):
+        neat = dict_args['neat']
+
+        for idx in range(self.top):
+            if neat.genomes[idx].fitness < self.termination_fitness:
+                return False
+    
+        return True
+    
+
+class TimeTermination(TerminationCallback):
+    def __init__(self, hours, minutes=0, seconds=0):
+        self.run_time = hours * 3600 + minutes * 60 + seconds
+
+        self.start_time = time.perf_counter()
+
+
+    def __call__(self, dict_args):
+        return (time.perf_counter() - self.start_time) >= self.run_time
+
