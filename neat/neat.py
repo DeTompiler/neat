@@ -6,6 +6,7 @@ from neat.node_gene import NodeGene
 from neat.species import Species
 from tensorflow.keras.activations import sigmoid, relu
 import random
+import numpy as np
 
 
 class Neat:
@@ -128,6 +129,15 @@ class Neat:
     def sort_genomes(self):
         self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
     
+
+    def forward_all(self, inputs):
+        predictions = np.empty(shape=(self.population, self.output_size))
+
+        for idx, genome in enumerate(self.genomes):
+            predictions[idx] = genome.forward(inputs[idx])
+        
+        return predictions
+
 
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
         if sort:
