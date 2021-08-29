@@ -23,4 +23,15 @@ class GenomeSavingCallback():
             neat.genomes[idx].save(path=self.filepaths[idx] + f'-gen-{generation}.cfg')
 
 
-        
+class GenerationTermination():
+    def __init__(self, stop_generation):
+        self.stop_generation = stop_generation
+
+
+    def __call__(self, neat, curr_generation):
+        return curr_generation < self.stop_generation
+
+
+
+
+
