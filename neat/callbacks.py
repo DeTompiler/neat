@@ -58,5 +58,11 @@ class FitnessTermination():
         return False
 
 
+class TimeTermination():
+    def __init__(self):
+        pass
+
+
+
 
 
