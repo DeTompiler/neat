@@ -26,12 +26,12 @@ class GenomeSaving():
 
 
 class GenerationTermination():
-    def __init__(self, stop_generation):
-        self.stop_generation = stop_generation
+    def __init__(self, stop_at):
+        self.stop_at = stop_at
 
 
     def __call__(self, neat, curr_generation):
-        return curr_generation < self.stop_generation
+        return curr_generation >= self.stop_at
 
 
 class FitnessTermination():
