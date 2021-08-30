@@ -1,3 +1,5 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from collections import deque
 from neat.callbacks import TerminationCallback
 import pickle
