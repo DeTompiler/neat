@@ -157,7 +157,7 @@ class Neat:
             genome.fitness += score
 
 
-    def run_env(self, env):
+    def cycle_env(self, env):
         states = env.reset()
 
         done = False
@@ -189,7 +189,7 @@ class Neat:
         while not terminate:
             callback_args['generation'] = generation
 
-            self.run_env(env)
+            self.cycle_env(env)
 
             for t_callback in termination_callbacks:
                 if t_callback(callback_args):
