@@ -164,12 +164,10 @@ class Neat:
         genomes_alive = [True for genome in self.genomes]
 
         while not done:
-            next_states, scores, genomes_alive = env.step(self.forward_all(states, genomes_alive))
+            next_states, scores, genomes_alive, done = env.step(self.forward_all(states, genomes_alive))
 
             self.reset_all_nodes()
             states = next_states
-
-            done = True in genomes_alive
         
         self.add_fitness(scores)
 
