@@ -195,6 +195,7 @@ class Neat:
             callback_args['generation'] = generation
 
             self.cycle_env(env, visualize)
+            self.sort_genomes()
 
             for t_callback in termination_callbacks:
                 if t_callback(callback_args):
