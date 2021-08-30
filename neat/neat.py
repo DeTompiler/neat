@@ -132,18 +132,12 @@ class Neat:
         self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
     
 
-    def forward_all(self, inputs, genomes_alive, single_input=False):
+    def forward_all(self, inputs, genomes_alive):
         predictions = np.empty(shape=(self.population, self.output_size))
 
-        if single_input:
-            for idx, genome in enumerate(self.genomes):
-                if genomes_alive[idx]:
-                    predictions[idx] = genome.forward(inputs)
-        
-        else:
-            for idx, genome in enumerate(self.genomes):
-                if genomes_alive[idx]:
-                    predictions[idx] = genome.forward(inputs[idx])
+        for idx, genome in enumerate(self.genomes):
+            if genomes_alive[idx]:
+                predictions[idx] = genome.forward(inputs[idx])
             
         return predictions
     
@@ -163,14 +157,14 @@ class Neat:
             genome.fitness += score
 
 
-    def run_env(self, env, single_input=False):
+    def run_env(self, env):
         states = env.reset()
 
         done = False
         genomes_alive = [True for genome in self.genomes]
 
         while not done:
-            next_states, scores, genomes_alive = env.step(self.forward_all(states, genomes_alive, single_input))
+            next_states, scores, genomes_alive = env.step(self.forward_all(states, genomes_alive))
 
             self.add_fitness(scores)
             self.reset_all_nodes()
@@ -179,7 +173,7 @@ class Neat:
             done = True in genomes_alive
 
 
-    def fit(self, env, single_input, callbacks=[]):
+    def fit(self, env, callbacks=[]):
         termination_callbacks = []
         other_callbacks = []
 
@@ -196,7 +190,7 @@ class Neat:
         while not terminate:
             callback_args['generation'] = generation
 
-            self.run_env(env, single_input)
+            self.run_env(env)
 
             for t_callback in termination_callbacks:
                 if t_callback(callback_args):
