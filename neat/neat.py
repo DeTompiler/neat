@@ -175,9 +175,12 @@ class Neat:
             states = next_states
         
         self.add_fitness(genomes, scores)
+    
 
+    def handle_callbacks(self, callbacks):
+        termination_callbacks = []
+        other_callbacks = []
 
-    def fit(self, env, callbacks=[], visualize=False):
         termination_callbacks = []
         other_callbacks = []
 
@@ -185,7 +188,13 @@ class Neat:
             if isinstance(callback, TerminationCallback):
                 termination_callbacks.append(callback)
             else:
-                other_callbacks.append(callback)
+                other_callbacks.append(callback)     
+
+        return termination_callbacks, other_callbacks  
+
+
+    def fit(self, env, callbacks=[], visualize=False):
+        termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
         
         generation = 1
         callback_args = {'neat':self, 'generation':generation}
