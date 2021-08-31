@@ -134,7 +134,7 @@ class Neat:
         self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
     
 
-    def forward_all(self, inputs, genomes_alive):
+    def forward_all(self, genomes, inputs, genomes_alive):
         predictions = np.empty(shape=(self.population, self.output_size))
 
         for idx, genome in enumerate(self.genomes):
@@ -144,37 +144,37 @@ class Neat:
         return predictions
     
 
-    def reset_all_nodes(self):
-        for genome in self.genomes:
+    def reset_all_nodes(self, genomes):
+        for genome in genomes:
             genome.reset_nodes()
         
 
-    def reset_all_fitness(self):
-        for genome in self.genomes:
+    def reset_all_fitness(self, genomes):
+        for genome in genomes:
             genome.reset_fitness()
 
     
-    def add_fitness(self, scores):
+    def add_fitness(self, genomes, scores):
         for genome, score in zip(self.genomes, scores):
             genome.fitness += score
 
 
-    def cycle_env(self, env, visualize):
+    def cycle_env(self, env, genomes, visualize):
         states = env.reset()
 
         done = False
-        genomes_alive = [True for genome in self.genomes]
+        genomes_alive = [True for genome in genomes]
 
         while not done:
             if visualize:
                 env.render()
 
-            next_states, scores, genomes_alive, done = env.step(self.forward_all(states, genomes_alive))
+            next_states, scores, genomes_alive, done = env.step(self.forward_all(genomes, states, genomes_alive))
 
-            self.reset_all_nodes()
+            self.reset_all_nodes(genomes)
             states = next_states
         
-        self.add_fitness(scores)
+        self.add_fitness(genomes, scores)
 
 
     def fit(self, env, callbacks=[], visualize=False):
@@ -194,7 +194,7 @@ class Neat:
         while not terminate:
             callback_args['generation'] = generation
 
-            self.cycle_env(env, visualize)
+            self.cycle_env(env, self.genomes, visualize)
             self.sort_genomes()
                
             for callback in other_callbacks:
@@ -208,7 +208,7 @@ class Neat:
                 break
             
             self.evolve()
-            self.reset_all_fitness()
+            self.reset_all_fitness(self.genomes)
             generation += 1
         
         if visualize:
