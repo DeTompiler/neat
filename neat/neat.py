@@ -184,9 +184,9 @@ class Neat:
         clear_log = '\033[2K' if clear_line else ''
         log_end = '\n' if final_log else '\r'
 
-        log = clear_log + f'generation = {generation}' + log_end
+        log = clear_log + f'generation = {generation}'
 
-        print(log)
+        print(log, end='')
     
 
     def handle_callbacks(self, callbacks):
