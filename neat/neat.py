@@ -240,7 +240,7 @@ class Neat:
             env.close()
         
         if verbose > 0:
-            self.log(generation, final_log=True)
+            self.log(generation, self.genomes[0].fitness, final_log=True)
 
 
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
