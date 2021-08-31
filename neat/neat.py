@@ -186,7 +186,7 @@ class Neat:
 
         log = clear_log + f'generation = {generation}'
 
-        print(log, end='')
+        print(log, end=log_end)
     
 
     def handle_callbacks(self, callbacks):
