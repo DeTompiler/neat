@@ -180,11 +180,11 @@ class Neat:
         self.add_fitness(genomes, scores)
     
 
-    def log(self, generation, clear_line=True, final_log=False):
+    def log(self, generation, top_fitness, clear_line=True, final_log=False):
         clear_log = '\033[2K' if clear_line else ''
         log_end = '\n' if final_log else '\r'
 
-        log = clear_log + f'generation = {generation}'
+        log = clear_log + f'generation = {generation}, top_fitness = {top_fitness}'
 
         print(log, end=log_end)
     
