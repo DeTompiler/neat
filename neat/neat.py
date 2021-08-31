@@ -196,13 +196,16 @@ class Neat:
 
             self.cycle_env(env, visualize)
             self.sort_genomes()
+               
+            for callback in other_callbacks:
+                callback(callback_args)
 
             for t_callback in termination_callbacks:
                 if t_callback(callback_args):
-                    break
-                
-            for callback in other_callbacks:
-                callback(callback_args)
+                    terminate = True
+            
+            if terminate:
+                break
             
             self.evolve()
             self.reset_all_fitness()
