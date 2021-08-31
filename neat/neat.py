@@ -137,7 +137,7 @@ class Neat:
     def forward_all(self, genomes, inputs, genomes_alive):
         predictions = np.empty(shape=(self.population, self.output_size))
 
-        for idx, genome in enumerate(self.genomes):
+        for idx, genome in enumerate(genomes):
             if genomes_alive[idx]:
                 predictions[idx] = genome.forward(inputs[idx])
             
@@ -155,7 +155,7 @@ class Neat:
 
     
     def add_fitness(self, genomes, scores):
-        for genome, score in zip(self.genomes, scores):
+        for genome, score in zip(genomes, scores):
             genome.fitness += score
 
 
