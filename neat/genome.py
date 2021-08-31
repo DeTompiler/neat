@@ -74,7 +74,7 @@ class Genome:
 
                 for connection in node.connections:
                     if connection.enabled:
-                        connection.node_out.output += connection.weight * node.output
+                        connection.node_out.output += float(connection.weight * node.output)
 
         output_layer = self.layers[self.neat.output_layer_nb]
         if len(output_layer) == 1:
