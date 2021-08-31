@@ -32,6 +32,9 @@ class Species:
 
     def kill(self, precentage, kill_in_neat=False):
         size = math.ceil(len(self.genomes) * precentage)
+        
+        if size == len(self.genomes):
+            size -= 1
 
         if kill_in_neat:
             for idx in range(size):
