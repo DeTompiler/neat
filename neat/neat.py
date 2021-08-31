@@ -243,6 +243,43 @@ class Neat:
             self.log(generation, self.genomes[0].fitness, final_log=True)
 
 
+    def test(self, env, genomes, callbacks=[], verbose=0, visualize=False):
+        termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
+        
+        generation = 1
+        callback_args = {'neat':self, 'generation':generation}
+        terminate = False
+
+        while not terminate:
+            callback_args['generation'] = generation
+
+            self.cycle_env(env, genomes, verbose, visualize)
+            # self.sort_genomes()
+               
+            if verbose == 1:
+                self.log(generation, genomes[0].fitness, final_log=False)
+
+            for callback in other_callbacks:
+                callback(callback_args)
+
+            for t_callback in termination_callbacks:
+                if t_callback(callback_args):
+                    terminate = True
+            
+            if terminate:
+                break
+            
+            self.reset_all_fitness(self.genomes)
+            generation += 1
+        
+        if visualize:
+            env.close()
+        
+        if verbose > 0:
+            self.log(generation, self.genomes[0].fitness, final_log=True)
+
+
+
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
         if sort:
             self.sort_genomes()
