@@ -284,7 +284,7 @@ class Genome:
                 disjoint_genes += 1
                 idx1 += 1    
 
-        avg_weight_diff = weight_diff / similar_genes
+        avg_weight_diff = weight_diff / similar_genes if similar_genes > 0 else 0
         excess_genes = len(g1.connections) - idx1
 
         genes_nb = max(len(g1.connections), len(g2.connections))
