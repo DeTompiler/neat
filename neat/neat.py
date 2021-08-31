@@ -159,13 +159,16 @@ class Neat:
             genome.fitness += score
 
 
-    def cycle_env(self, env, genomes, visualize):
+    def cycle_env(self, env, genomes, verbose, visualize):
         states = env.reset()
 
         done = False
         genomes_alive = [True for genome in genomes]
 
         while not done:
+            if verbose == 2:
+                self.log(None, final_log=False)
+
             if visualize:
                 env.render()
 
@@ -202,7 +205,7 @@ class Neat:
         return termination_callbacks, other_callbacks  
 
 
-    def fit(self, env, callbacks=[], visualize=False):
+    def fit(self, env, callbacks=[], verbose=0, visualize=False):
         termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
         
         generation = 1
@@ -210,6 +213,9 @@ class Neat:
         terminate = False
 
         while not terminate:
+            if verbose == 1:
+                self.log(generation, final_log=False)
+
             callback_args['generation'] = generation
 
             self.cycle_env(env, self.genomes, visualize)
@@ -231,6 +237,9 @@ class Neat:
         
         if visualize:
             env.close()
+        
+        if verbose > 0:
+            self.log(generation, final_log=True)
 
 
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
