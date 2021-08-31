@@ -177,6 +177,15 @@ class Neat:
         self.add_fitness(genomes, scores)
     
 
+    def log(self, generation, clear_line=True, final_log=False):
+        clear_log = '\033[2K' if clear_line else ''
+        log_end = '\n' if final_log else '\r'
+
+        log = clear_log + f'generation = {generation}' + log_end
+
+        print(log)
+    
+
     def handle_callbacks(self, callbacks):
         termination_callbacks = []
         other_callbacks = []
