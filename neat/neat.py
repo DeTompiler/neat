@@ -167,7 +167,7 @@ class Neat:
 
         while not done:
             if verbose == 2:
-                self.log(None, final_log=False)
+                self.log(None, None, final_log=False)
 
             if visualize:
                 env.render()
@@ -213,14 +213,15 @@ class Neat:
         terminate = False
 
         while not terminate:
-            if verbose == 1:
-                self.log(generation, final_log=False)
-
             callback_args['generation'] = generation
 
             self.cycle_env(env, self.genomes, verbose, visualize)
             self.sort_genomes()
                
+            if verbose == 1:
+                self.log(generation, self.genomes[0].fitness, final_log=False)
+
+
             for callback in other_callbacks:
                 callback(callback_args)
 
