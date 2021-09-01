@@ -5,9 +5,11 @@ from collections import deque
 
 
 class GenomeSaving():
-    def __init__(self, population, top=1, override=True, dir='', filenames=[]):
+    def __init__(self, population, top=1, best_only=False, override=True, dir='', filenames=[]):
         self.top = top if top is not None else population
         self.override = override
+        self.best_only = best_only
+        self.best_fitness = 0
         self.filepaths = [os.path.join(dir, filename) for filename in filenames] if len(filenames) == top else \
         [os.path.join(dir, f'genome-{idx}.{Genome.FILE_EXT}' if self.override else f'genome-{idx}') for idx in range(top)]
 
@@ -16,7 +18,16 @@ class GenomeSaving():
         neat = dict_args['neat']
         generation = dict_args['generation']
 
-        if self.override:
+        if self.best_only:
+            best_genome = neat.genomes[0]
+
+            if best_genome.fitness > self.best_fitness:
+                self.best_fitness = best_genome.fitness
+                best_genome.save(self.filepaths[0])
+            
+            return
+
+        elif self.override:
             for idx in range(self.top):
                 neat.genomes[idx].save(path=self.filepaths[idx])
             
