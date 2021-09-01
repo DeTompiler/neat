@@ -312,7 +312,7 @@ class Neat:
 
     def load_genomes(self, path):
         with open(path, 'rb') as file:
-            self.genomes = pickle.load(file)
+            return pickle.load(file)
 
 
     def create_base_genome(self, input_size, output_size):
