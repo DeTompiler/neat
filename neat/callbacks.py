@@ -48,7 +48,7 @@ class FileLogger():
         neat = dict_args['neat']
         generation = dict_args['generation']
 
-        self.data.append(f'Gen {generation},{",".join([genome.fitness for genome in neat.genomes])}\n')
+        self.data.append(f'Gen {generation},{",".join([str(genome.fitness) for genome in neat.genomes])}\n')
         
         with open(self.filepath, 'w+') as file:
             file.writelines(self.data)
