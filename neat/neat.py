@@ -303,6 +303,16 @@ class Neat:
     def load_genome(self, path):
         with open(path, 'rb') as file:
             return pickle.load(file)
+        
+
+    def save_genomes(self, path):
+        with open(path, 'wb') as file:
+            pickle.dump(self.genomes, file)
+
+
+    def load_genomes(self, path):
+        with open(path, 'rb') as file:
+            self.genomes = pickle.load(file)
 
 
     def create_base_genome(self, input_size, output_size):
