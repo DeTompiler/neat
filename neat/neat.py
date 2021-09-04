@@ -164,7 +164,7 @@ class Neat:
         self.genomes = genomes
 
         for genome in self.genomes:
-            genome.neat = Neat
+            genome.neat = self
 
 
     def log(self, generation, top_fitness, clear_line=True, final_log=False):
@@ -301,14 +301,8 @@ class Neat:
 
 
     def load_genomes(self, path):
-        genomes = deque()
-
         with open(path, 'rb') as file:
-            try:
-                while True:
-                    genomes.append(pickle.load(file))
-            except Exception:
-                return genomes
+            return deque(pickle.load(file))
                 
 
     def create_base_genome(self, input_size, output_size):
