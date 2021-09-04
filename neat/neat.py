@@ -159,6 +159,13 @@ class Neat:
         self.add_fitness(genomes, scores)
     
 
+    def set_genomes(self, genomes):
+        self.genomes = genomes
+
+        for genome in self.genomes:
+            genome.neat = Neat
+
+
     def log(self, generation, top_fitness, clear_line=True, final_log=False):
         clear_log = '\033[2K' if clear_line else ''
         log_end = '\n' if final_log else '\r'
