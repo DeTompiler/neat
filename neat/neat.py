@@ -78,7 +78,7 @@ class Neat:
             if sort_species:
                 species.sort()
 
-            species.kill(self.config.kill_worst, kill_in_neat=True)
+            species.kill(1 - self.config.kill_worst, kill_in_neat=True)
 
             if species.size() > 0:
                 remaining_species.append(species)
@@ -303,7 +303,7 @@ class Neat:
         for input_node in inputs:
             for output_node in outputs:
                 connection = ConnectionGene(input_node, output_node, enabled=True,
-                    weight_randomization_factor=self.config.weight_randomization_factor)
+                    weight_rand_factor=self.config.weight_rand_factor)
                 
                 input_node.connections.append(connection)
                 genome.add_connection(connection)

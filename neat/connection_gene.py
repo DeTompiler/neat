@@ -7,11 +7,11 @@ class ConnectionGene(Gene):
     ''' ConnectionGene inherits from Gene class
     '''
 
-    def __init__(self, node_in, node_out, weight=None, enabled=None, weight_randomization_factor=1.):
+    def __init__(self, node_in, node_out, weight=None, enabled=None, weight_rand_factor=1.):
         super().__init__(Math.cantor_pairing(node_in.innovation_nb, node_out.innovation_nb))
         self.node_in = node_in
         self.node_out = node_out
-        self.weight = weight if weight is not None else self.get_random_weight(weight_randomization_factor)
+        self.weight = weight if weight is not None else self.get_random_weight(weight_rand_factor)
         self.enabled = enabled
 
 
@@ -22,12 +22,12 @@ class ConnectionGene(Gene):
         return ConnectionGene(node_in, node_out, self.weight, self.enabled)
 
 
-    def get_random_weight(self, weight_randomization_factor=1.):
-        return np.random.rand() * weight_randomization_factor
+    def get_random_weight(self, weight_rand_factor=1.):
+        return np.random.rand() * weight_rand_factor
 
 
-    def random_weight(self, weight_randomization_factor=1.):
-        self.weight = self.get_random_weight(weight_randomization_factor)
+    def random_weight(self, weight_rand_factor=1.):
+        self.weight = self.get_random_weight(weight_rand_factor)
     
 
     def shift_weight(self, weight_shift_factor=1.):

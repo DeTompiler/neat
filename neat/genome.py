@@ -170,21 +170,21 @@ class Genome:
 
     def randomize_weights(self):
         for connection in self.connections:
-            connection.random_weight(self.neat.config.weight_randomization_factor)
+            connection.random_weight(self.neat.config.weight_rand_factor)
 
 
     def mutate(self):
         probabilities = np.random.rand(5) # 5 - number of possible mutations
 
-        if probabilities[0] < self.neat.config.toggle_probability:
+        if probabilities[0] < self.neat.config.toggle_conn_prob:
             self.toggle_random_connection()
-        if probabilities[1] < self.neat.config.shift_probability:
+        if probabilities[1] < self.neat.config.shift_weight_prob:
             self.shift_random_weight()
-        if probabilities[2] < self.neat.config.random_probability:
+        if probabilities[2] < self.neat.config.random_weight_prob:
             self.randomize_random_weight()
-        if probabilities[3] < self.neat.config.connection_probability:
+        if probabilities[3] < self.neat.config.add_conn_prob:
             self.add_random_connection()
-        if probabilities[4] < self.neat.config.node_probability:
+        if probabilities[4] < self.neat.config.add_node_prob:
             self.add_random_node()
 
 
@@ -202,7 +202,7 @@ class Genome:
 
 
     def randomize_random_weight(self):
-        self.random_connection().random_weight(self.neat.config.weight_randomization_factor)
+        self.random_connection().random_weight(self.neat.config.weight_rand_factor)
     
 
     def shift_random_weight(self):
@@ -210,7 +210,7 @@ class Genome:
     
 
     def add_random_connection(self):
-        for try_idx in range(self.neat.config.max_add_random_connection_tries):
+        for try_idx in range(self.neat.config.add_conn_tries):
             node_in = self.random_node()
             node_out = self.random_node()
 
@@ -225,7 +225,7 @@ class Genome:
                     node_in, node_out = node_out, node_in
                 
                 connection = ConnectionGene(node_in, node_out, enabled=True,
-                    weight_randomization_factor=self.neat.config.weight_randomization_factor)
+                    weight_rand_factor=self.neat.config.weight_rand_factor)
                 
                 node_in.connections.append(connection)
                 self.add_connection(connection)
@@ -290,8 +290,9 @@ class Genome:
         genes_nb = max(len(g1.connections), len(g2.connections))
         genes_nb = 1 if genes_nb < 20 else genes_nb
 
-        return (self.neat.config.c1 * excess_genes / genes_nb) + (self.neat.config.c2 * disjoint_genes / genes_nb) \
-            + self.neat.config.c3 * avg_weight_diff
+        return (self.neat.config.excess_distance_coefficient * excess_genes / genes_nb) \
+        + (self.neat.config.disjoint_distance_coefficient * disjoint_genes / genes_nb) \
+        + self.neat.config.weights_distance_coefficient * avg_weight_diff
 
 
     def crossover(self, genome):
