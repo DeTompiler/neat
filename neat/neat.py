@@ -78,7 +78,7 @@ class Neat:
             if sort_species:
                 species.sort()
 
-            species.kill(1 - self.config.kill_worst, kill_in_neat=True)
+            species.kill(1 - self.config.survivors, kill_in_neat=True)
 
             if species.size() > 0:
                 remaining_species.append(species)
