@@ -15,7 +15,7 @@ class Species:
 
 
     def compatible(self, genome):
-        return self.representative.distance(genome) <= self.representative.neat.genome_distance_threshold
+        return self.representative.distance(genome) <= self.representative.neat.config.genome_distance_threshold
     
 
     def add_genome(self, genome, check_compatibility=True):

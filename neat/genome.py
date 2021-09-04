@@ -25,8 +25,8 @@ class Genome:
         genome = Genome(self.neat)
         genome.fitness = self.fitness
 
-        input_layer = self.layers[self.neat.input_layer_nb]
-        output_layer = self.layers[self.neat.output_layer_nb]
+        input_layer = self.layers[self.neat.config.input_layer_nb]
+        output_layer = self.layers[self.neat.config.output_layer_nb]
 
         for node in input_layer:
             genome.add_node(node.copy())
@@ -53,7 +53,7 @@ class Genome:
 
 
     def assign_inputs(self, inputs):
-        input_layer = self.layers[self.neat.input_layer_nb]
+        input_layer = self.layers[self.neat.config.input_layer_nb]
         assert len(inputs) == len(input_layer)
 
         for node, input in zip(input_layer, inputs):
@@ -76,11 +76,11 @@ class Genome:
                     if connection.enabled:
                         connection.node_out.output += float(connection.weight * node.output)
 
-        output_layer = self.layers[self.neat.output_layer_nb]
+        output_layer = self.layers[self.neat.config.output_layer_nb]
         if len(output_layer) == 1:
-            return self.neat.output_activation(output_layer[0].output).numpy()
+            return self.neat.config.output_activation(output_layer[0].output).numpy()
         
-        return self.neat.output_activation(self.layer_to_np_array(self.neat.output_layer_nb)).numpy()
+        return self.neat.config.output_activation(self.layer_to_np_array(self.neat.config.output_layer_nb)).numpy()
 
 
     def reset_fitness(self):
@@ -170,21 +170,21 @@ class Genome:
 
     def randomize_weights(self):
         for connection in self.connections:
-            connection.random_weight(self.neat.weight_randomization_factor)
+            connection.random_weight(self.neat.config.weight_randomization_factor)
 
 
     def mutate(self):
         probabilities = np.random.rand(5) # 5 - number of possible mutations
 
-        if probabilities[0] < self.neat.toggle_probability:
+        if probabilities[0] < self.neat.config.toggle_probability:
             self.toggle_random_connection()
-        if probabilities[1] < self.neat.shift_probability:
+        if probabilities[1] < self.neat.config.shift_probability:
             self.shift_random_weight()
-        if probabilities[2] < self.neat.random_probability:
+        if probabilities[2] < self.neat.config.random_probability:
             self.randomize_random_weight()
-        if probabilities[3] < self.neat.connection_probability:
+        if probabilities[3] < self.neat.config.connection_probability:
             self.add_random_connection()
-        if probabilities[4] < self.neat.node_probability:
+        if probabilities[4] < self.neat.config.node_probability:
             self.add_random_node()
 
 
@@ -202,15 +202,15 @@ class Genome:
 
 
     def randomize_random_weight(self):
-        self.random_connection().random_weight(self.neat.weight_randomization_factor)
+        self.random_connection().random_weight(self.neat.config.weight_randomization_factor)
     
 
     def shift_random_weight(self):
-        self.random_connection().shift_weight(self.neat.weight_shift_factor)
+        self.random_connection().shift_weight(self.neat.config.weight_shift_factor)
     
 
     def add_random_connection(self):
-        for try_idx in range(self.neat.max_add_random_connection_tries):
+        for try_idx in range(self.neat.config.max_add_random_connection_tries):
             node_in = self.random_node()
             node_out = self.random_node()
 
@@ -225,7 +225,7 @@ class Genome:
                     node_in, node_out = node_out, node_in
                 
                 connection = ConnectionGene(node_in, node_out, enabled=True,
-                    weight_randomization_factor=self.neat.weight_randomization_factor)
+                    weight_randomization_factor=self.neat.config.weight_randomization_factor)
                 
                 node_in.connections.append(connection)
                 self.add_connection(connection)
@@ -290,7 +290,8 @@ class Genome:
         genes_nb = max(len(g1.connections), len(g2.connections))
         genes_nb = 1 if genes_nb < 20 else genes_nb
 
-        return (self.neat.c1 * excess_genes / genes_nb) + (self.neat.c2 * disjoint_genes / genes_nb) + self.neat.c3 * avg_weight_diff
+        return (self.neat.config.c1 * excess_genes / genes_nb) + (self.neat.config.c2 * disjoint_genes / genes_nb) \
+            + self.neat.config.c3 * avg_weight_diff
 
 
     def crossover(self, genome):
@@ -346,7 +347,7 @@ class Genome:
         # g1 has better fitness than g2
         g1, g2 = (self, genome) if self.fitness > genome.fitness else (genome, self)
 
-        return g2.fitness > (g1.fitness - g1.fitness * self.neat.similar_fitness_range) < g2.fitness
+        return g2.fitness > (g1.fitness - g1.fitness * self.neat.config.similar_fitness_range) < g2.fitness
 
 
     def __str__(self):
