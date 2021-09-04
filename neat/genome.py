@@ -365,5 +365,10 @@ class Genome:
     
 
     def save(self, path=f'genome.{FILE_EXT}'):
+        neat = self.neat
+        self.neat = None
+
         with open(path, 'wb') as file:
             pickle.dump(self, file)
+        
+        self.neat = neat
