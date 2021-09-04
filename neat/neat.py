@@ -1,3 +1,4 @@
+from math import pi
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from collections import deque
@@ -293,13 +294,22 @@ class Neat:
 
     def save_genomes(self, path):
         with open(path, 'wb') as file:
-            pickle.dump(self.genomes, file)
+            for genome in self.genomes:
+                genome.neat = None
+                pickle.dump(genome, file)
+                genome.neat = self
 
 
     def load_genomes(self, path):
-        with open(path, 'rb') as file:
-            return pickle.load(file)
+        genomes = deque()
 
+        with open(path, 'rb') as file:
+            try:
+                while True:
+                    genomes.append(pickle.load(file))
+            except Exception:
+                return genomes
+                
 
     def create_base_genome(self, input_size, output_size):
         genome = Genome(self)
