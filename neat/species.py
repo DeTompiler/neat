@@ -33,8 +33,8 @@ class Species:
     def kill(self, precentage, kill_in_neat=False):
         size = math.ceil(len(self.genomes) * precentage)
         
-        if size == len(self.genomes):
-            size -= 1
+        if len(self.genomes) - size < self.representative.neat.config.min_species_population:
+            size = len(self.genomes) - self.representative.neat.config.min_species_population
 
         if kill_in_neat:
             for idx in range(size):
