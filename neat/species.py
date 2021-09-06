@@ -70,3 +70,9 @@ class Species:
 
         for genome in self.genomes:
             self.fitness += genome.fitness
+        
+
+    def reset(self):
+        self.representative = self.random_genome(fitness_prob=False)
+        self.genomes = deque([self.representative])
+        self.fitness = None
