@@ -58,7 +58,8 @@ class Neat:
     
 
     def generate_species(self):
-        self.species = deque()
+        for species in self.species:
+            species.reset()
 
         for genome in self.genomes:
             found = False
