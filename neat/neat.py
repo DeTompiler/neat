@@ -28,7 +28,7 @@ class Neat:
         self.output_size = output_size
         self.population = population
 
-        self.config = Config()
+        self.config = config
 
         self.node_innovation_nb = 0
         self.nodes = {}
