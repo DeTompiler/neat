@@ -75,7 +75,7 @@ class Species:
             self.fitness += genome.fitness
         
 
-    def reset(self):
-        self.representative = self.random_genome(fitness_prob=False)
+    def reset(self, representative=None):
+        self.representative = self.random_genome(fitness_prob=False) if representative is None else representative
         self.genomes = deque([self.representative])
         self.fitness = None
