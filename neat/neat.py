@@ -34,9 +34,12 @@ class Neat:
         self.nodes = {}
         self.base_genome = self.create_base_genome(self.input_size, self.output_size)
         
+        self.genomes = []
+        self.species = deque()
+        
         if init_population:
             self.genomes = [self.base_genome.copy() for idx in range(population)]
-            self.species = deque()
+            self.generate_species()
 
 
     def get_node(self, connection):
