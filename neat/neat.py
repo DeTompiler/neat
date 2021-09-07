@@ -109,11 +109,11 @@ class Neat:
     
 
     def evolve(self):
-        self.generate_species()
         self.adjust_genomes_fitness()
         self.kill_worst_genomes(sort_species=True)
         self.reproduce()
         self.mutate_all()
+        self.generate_species()
 
         
     def sort_genomes(self):
