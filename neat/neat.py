@@ -62,6 +62,27 @@ class Neat:
             genome.mutate()
     
 
+    def best_representatives(self):
+        representatives = deque()
+
+        for species in self.species:
+            representative = species.representative
+            smallest_distance = None
+            most_compatible_genome = None
+
+            for genome in self.genomes:
+                curr_distance = genome.distance(representative)
+                
+                if curr_distance < smallest_distance or smallest_distance is None:
+                    smallest_distance = curr_distance
+                    most_compatible_genome = genome
+            
+            self.genomes.remove(most_compatible_genome)
+            representatives.append(most_compatible_genome)
+        
+        return representatives
+    
+
     def generate_species(self):
         for species in self.species:
             species.reset()
