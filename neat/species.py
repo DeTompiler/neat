@@ -19,7 +19,10 @@ class Species:
     
 
     def add_genome(self, genome, check_compatibility=True):
-        if genome is self.representative or (check_compatibility and not self.compatible(genome)):
+        if genome is self.representative:
+            return True
+
+        elif check_compatibility and not self.compatible(genome):
             return False
         
         self.genomes.append(genome)
