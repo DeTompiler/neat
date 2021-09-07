@@ -89,8 +89,8 @@ class Neat:
 
 
     def generate_species(self):
-        for species in self.species:
-            species.reset()
+        new_representatives = self.new_representatives()
+        self.reset_species(new_representatives)
 
         for genome in self.genomes:
             found = False
@@ -102,6 +102,8 @@ class Neat:
             
             if not found:
                 self.species.append(Species(genome))
+        
+        self.genomes.extend(new_representatives)
     
 
     def kill_worst_genomes(self, sort_species=False):
