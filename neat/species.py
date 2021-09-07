@@ -8,6 +8,7 @@ class Species:
         self.representative = representative
         self.genomes = deque([representative])
         self.fitness = None
+        self.max_fitness = None
 
     
     def size(self):
