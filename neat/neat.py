@@ -83,6 +83,11 @@ class Neat:
         return representatives
     
 
+    def reset_species(self, representatives):
+        for representative, species in zip(representatives, self.species):
+            species.reset(representative)
+
+
     def generate_species(self):
         for species in self.species:
             species.reset()
