@@ -62,7 +62,7 @@ class Neat:
             genome.mutate()
     
 
-    def best_representatives(self):
+    def new_representatives(self):
         representatives = deque()
 
         for species in self.species:
