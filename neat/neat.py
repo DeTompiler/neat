@@ -73,7 +73,7 @@ class Neat:
             for genome in self.genomes:
                 curr_distance = genome.distance(representative)
                 
-                if curr_distance < smallest_distance or smallest_distance is None:
+                if smallest_distance is None or curr_distance < smallest_distance:
                     smallest_distance = curr_distance
                     most_compatible_genome = genome
             
