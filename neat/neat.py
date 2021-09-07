@@ -171,6 +171,8 @@ class Neat:
 
         for genome in self.genomes:
             genome.neat = self
+        
+        self.generate_species()
 
 
     def log(self, generation, top_fitness, clear_line=True, final_log=False):
