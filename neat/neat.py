@@ -23,7 +23,7 @@ class Neat:
     '''
 
 
-    def __init__(self, input_size, output_size, population, config=Config()):
+    def __init__(self, input_size, output_size, population, config=Config(), init_population=True):
         self.input_size = input_size
         self.output_size = output_size
         self.population = population
@@ -33,8 +33,10 @@ class Neat:
         self.node_innovation_nb = 0
         self.nodes = {}
         self.base_genome = self.create_base_genome(self.input_size, self.output_size)
-        self.genomes = [self.base_genome.copy() for idx in range(population)]
-        self.species = deque()
+        
+        if init_population:
+            self.genomes = [self.base_genome.copy() for idx in range(population)]
+            self.species = deque()
 
 
     def get_node(self, connection):
