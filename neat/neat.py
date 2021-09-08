@@ -142,9 +142,9 @@ class Neat:
             for idx in range(spawn):
                 genome = species.breed()
             
-            self.genomes.append(genome)
-            species.add_genome(genome, check_compatibility=False)
-            
+                self.genomes.append(genome)
+                species.add_genome(genome, check_compatibility=False)
+
 
     def evolve(self):
         self.eliminate_genomes(sort_species=True)
