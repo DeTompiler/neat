@@ -127,6 +127,13 @@ class Neat:
     
 
     def reproduce(self):
+        if len(self.species) == 0:
+            if self.config.reset_on_extinction:
+                self.genomes = [self.base_genome.copy() for idx in range(self.population)]
+                self.generate_species()
+            
+            return
+
         for idx in range(len(self.genomes), self.population):
             species = self.random_species()
             genome = species.breed()
