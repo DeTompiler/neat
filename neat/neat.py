@@ -112,7 +112,7 @@ class Neat:
         remaining_species = deque()
 
         for species in self.species:
-            species.update_stagnation()
+            species.update_stagnation(self.generation)
 
             if self.generation - species.last_improvement >= self.config.max_stagnation:
                 continue
