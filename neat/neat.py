@@ -108,7 +108,7 @@ class Neat:
         self.genomes.extend(new_representatives)
     
 
-    def kill_worst_genomes(self, sort_species=False):
+    def eliminate_genomes(self, sort_species=False):
         remaining_species = deque()
 
         for species in self.species:
@@ -144,7 +144,7 @@ class Neat:
 
 
     def evolve(self):
-        self.kill_worst_genomes(sort_species=True)
+        self.eliminate_genomes(sort_species=True)
         self.reproduce()
         self.mutate_all()
         self.generate_species()
