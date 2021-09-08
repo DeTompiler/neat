@@ -14,6 +14,7 @@ class Config:
         self.survivors = kwargs.get('survivors', 0.2)
         self.min_species_population = kwargs.get('min_species_population', 2)
         self.max_stagnation = kwargs.get('max_stagnation', 15)
+        self.reset_on_extinction = kwargs.get('reset_on_extinction', True)
 
         self.toggle_conn_prob = kwargs.get('toggle_conn_prob', 0.01)
         self.shift_weight_prob = kwargs.get('shift_weight_prob', 0.03)
