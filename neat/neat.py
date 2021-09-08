@@ -11,6 +11,7 @@ import random
 import numpy as np
 from neat.callbacks import TerminationCallback
 from neat.config import Config
+import math
 
 
 class Neat:
@@ -239,6 +240,30 @@ class Neat:
 
         return termination_callbacks, other_callbacks  
 
+
+    def compute_species_spawn(self):
+        species_fitness = [species.fitness for species in self.species]
+        fitness_sum = sum(species_fitness)
+
+        nb_spawns = self.population - len(self.genomes)
+        species_spawns = [0] * len(self.species)
+        round_down = True
+
+        # decimal check may be unnecessarily complicated and computationaly expensive
+        for idx, fitness in enumerate(species_fitness):
+            if fitness % 1 == 0.5:
+                if round_down:
+                    species_spawns[idx] = int(nb_spawns * fitness / fitness_sum)
+                else:
+                    species_spawns[idx] = math.ceil(nb_spawns * fitness / fitness_sum)
+                
+                round_down = not round_down
+            
+            else:
+                species_spawns[idx] = round(nb_spawns * fitness / fitness_sum)
+
+        return species_spawns
+        
 
     def fit(self, env, callbacks=[], verbose=0, visualize=False):
         termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
