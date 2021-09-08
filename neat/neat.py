@@ -121,6 +121,8 @@ class Neat:
 
             species.kill(1 - self.config.survivors, kill_in_neat=True)
 
+            remaining_species.append(species)
+
         self.species = remaining_species
     
 
