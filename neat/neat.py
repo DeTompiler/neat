@@ -251,6 +251,8 @@ class Neat:
         species_spawns = [0] * len(self.species)
         round_down = True
 
+        spawn_sum = 0
+
         # decimal check may be unnecessarily complicated and computationaly expensive
         for idx, fitness in enumerate(species_fitness):
             if fitness % 1 == 0.5:
@@ -263,6 +265,11 @@ class Neat:
             
             else:
                 species_spawns[idx] = round(nb_spawns * fitness / fitness_sum)
+
+            spawn_sum += species_spawns[idx]
+
+        if spawn_sum < nb_spawns:
+            species_spawns[random.randint(0, len(self.species) - 1)] += nb_spawns - spawn_sum
 
         return species_spawns
 
