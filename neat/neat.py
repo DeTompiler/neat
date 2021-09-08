@@ -146,8 +146,14 @@ class Neat:
     def evolve(self):
         self.eliminate_genomes(sort_species=True)
         self.reproduce()
-        self.mutate_genomes()
-        self.generate_species()
+
+        if len(self.species) > 0:
+            self.mutate_genomes()
+            self.generate_species()
+
+            return False
+        
+        return True
 
         
     def sort_genomes(self):
@@ -260,7 +266,7 @@ class Neat:
             if terminate:
                 break
             
-            self.evolve()
+            terminate = self.evolve()
             self.reset_all_fitness(self.genomes)
             self.generation += 1
         
