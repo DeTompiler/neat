@@ -255,13 +255,13 @@ class Neat:
             if verbose == 1:
                 self.log(self.generation, self.genomes[0].fitness, final_log=False)
 
-
             for callback in other_callbacks:
                 callback(callback_args)
 
             for t_callback in termination_callbacks:
                 if t_callback(callback_args):
                     terminate = True
+                    break
             
             if terminate:
                 break
