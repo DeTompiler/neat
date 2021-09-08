@@ -76,8 +76,6 @@ class Species:
         for genome in self.genomes:
             self.fitness += genome.fitness
         
-        self.max_fitness = max(self.fitness, self.max_fitness) if self.max_fitness is not None else self.fitness
-        
 
     def reset(self, representative=None):
         self.representative = self.random_genome(fitness_prob=False) if representative is None else representative
