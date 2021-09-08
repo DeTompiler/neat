@@ -41,7 +41,7 @@ class Neat:
         if init_population:
             self.genomes = [self.base_genome.copy() for idx in range(population)]
             self.generate_species()
-            self.mutate_all()
+            self.mutate_genomes()
 
 
     def get_node(self, connection):
@@ -59,7 +59,7 @@ class Neat:
         return NodeGene(self.node_innovation_nb, output=output, activation=activation, layer_nb=layer_nb)
     
 
-    def mutate_all(self):
+    def mutate_genomes(self):
         for genome in self.genomes:
             genome.mutate()
     
@@ -146,7 +146,7 @@ class Neat:
     def evolve(self):
         self.eliminate_genomes(sort_species=True)
         self.reproduce()
-        self.mutate_all()
+        self.mutate_genomes()
         self.generate_species()
 
         
