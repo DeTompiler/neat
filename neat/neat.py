@@ -112,13 +112,15 @@ class Neat:
         remaining_species = deque()
 
         for species in self.species:
-            if sort_species:
+            species.update_stagnation()
+
+            if self.generation - species.last_improvement >= self.config.max_stagnation:
+                continue
+
+            elif sort_species:
                 species.sort()
 
             species.kill(1 - self.config.survivors, kill_in_neat=True)
-
-            if species.size() > 0:
-                remaining_species.append(species)
 
         self.species = remaining_species
     
@@ -132,14 +134,7 @@ class Neat:
             species.add_genome(genome, check_compatibility=False)
 
 
-    def adjust_genomes_fitness(self):
-        for species in self.species:
-            species.adjust_fitness()
-            species.compute_fitness()
-    
-
     def evolve(self):
-        self.adjust_genomes_fitness()
         self.kill_worst_genomes(sort_species=True)
         self.reproduce()
         self.mutate_all()
