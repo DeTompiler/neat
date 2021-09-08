@@ -75,6 +75,15 @@ class Species:
 
         for genome in self.genomes:
             self.fitness += genome.fitness
+    
+
+    def update_stagnation(self, generation):
+        self.adjust_fitness()
+        self.compute_fitness()
+
+        if self.max_fitness is None or self.fitness > self.max_fitness:
+            self.max_fitness = self.fitness
+            self.last_improvement = generation
         
 
     def reset(self, representative=None):
