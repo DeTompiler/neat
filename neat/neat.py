@@ -135,14 +135,16 @@ class Neat:
                 self.generate_species()
             
             return
+        
+        species_spawn = self.compute_species_spawn()
 
-        for idx in range(len(self.genomes), self.population):
-            species = self.random_species()
-            genome = species.breed()
-
+        for species, spawn in zip(self.species, species_spawn):
+            for idx in range(spawn):
+                genome = species.breed()
+            
             self.genomes.append(genome)
             species.add_genome(genome, check_compatibility=False)
-
+            
 
     def evolve(self):
         self.eliminate_genomes(sort_species=True)
@@ -263,7 +265,7 @@ class Neat:
                 species_spawns[idx] = round(nb_spawns * fitness / fitness_sum)
 
         return species_spawns
-        
+
 
     def fit(self, env, callbacks=[], verbose=0, visualize=False):
         termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
