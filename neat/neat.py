@@ -36,6 +36,8 @@ class Neat:
         
         self.genomes = []
         self.species = deque()
+
+        self.generation = 1
         
         if init_population:
             self.genomes = [self.base_genome.copy() for idx in range(population)]
@@ -231,18 +233,17 @@ class Neat:
     def fit(self, env, callbacks=[], verbose=0, visualize=False):
         termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
         
-        generation = 1
-        callback_args = {'neat':self, 'generation':generation}
+        callback_args = {'neat':self, 'generation':self.generation}
         terminate = False
 
         while not terminate:
-            callback_args['generation'] = generation
+            callback_args['generation'] = self.generation
 
             self.cycle_env(env, self.genomes, verbose, visualize)
             self.sort_genomes()
                
             if verbose == 1:
-                self.log(generation, self.genomes[0].fitness, final_log=False)
+                self.log(self.generation, self.genomes[0].fitness, final_log=False)
 
 
             for callback in other_callbacks:
@@ -257,13 +258,13 @@ class Neat:
             
             self.evolve()
             self.reset_all_fitness(self.genomes)
-            generation += 1
+            self.generation += 1
         
         if visualize:
             env.close()
         
         if verbose > 0:
-            self.log(generation, self.genomes[0].fitness, final_log=True)
+            self.log(self.generation, self.genomes[0].fitness, final_log=True)
 
 
     def test(self, env, genomes, callbacks=[], verbose=0, visualize=False):
