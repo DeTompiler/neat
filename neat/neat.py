@@ -310,9 +310,6 @@ class Neat:
 
 
     def random_species(self, fitness_prob=True):
-        if len(self.species) == 1:
-            return self.species[0]
-
         if not fitness_prob:
             return random.choice(self.species)
         
