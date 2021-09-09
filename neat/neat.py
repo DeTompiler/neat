@@ -306,6 +306,9 @@ class Neat:
     def test(self, env, genomes, callbacks=[], verbose=0, visualize=False):
         termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
         
+        for genome in genomes:
+            genome.neat = self
+
         generation = 1
         callback_args = {'neat':self, 'generation':generation}
         terminate = False
