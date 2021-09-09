@@ -244,32 +244,24 @@ class Neat:
 
 
     def compute_species_spawn(self):
+        self.species = sorted(self.species, key=lambda species: species.fitness / species.size(), reverse=True)
         species_fitness = [species.fitness for species in self.species]
         fitness_sum = sum(species_fitness)
 
+        assert fitness_sum > 0
+
         nb_spawns = self.population - len(self.genomes)
         species_spawns = [0] * len(self.species)
-        round_down = True
 
         spawn_sum = 0
 
-        # decimal check may be unnecessarily complicated and computationaly expensive
         for idx, fitness in enumerate(species_fitness):
-            if fitness % 1 == 0.5:
-                if round_down:
-                    species_spawns[idx] = int(nb_spawns * fitness / fitness_sum)
-                else:
-                    species_spawns[idx] = math.ceil(nb_spawns * fitness / fitness_sum)
-                
-                round_down = not round_down
-            
-            else:
-                species_spawns[idx] = round(nb_spawns * fitness / fitness_sum)
-
-            spawn_sum += species_spawns[idx]
+                species_spawns[idx] = int(nb_spawns * fitness / fitness_sum)
+                spawn_sum += species_spawns[idx]
 
         if spawn_sum < nb_spawns:
-            species_spawns[random.randint(0, len(self.species) - 1)] += nb_spawns - spawn_sum
+            for idx in range(nb_spawns - spawn_sum):
+                species_spawns[idx] += 1
 
         return species_spawns
 
