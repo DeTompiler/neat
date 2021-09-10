@@ -373,21 +373,24 @@ class Neat:
                 
 
     def create_base_genome(self, input_size, output_size):
-        genome = Genome(self)
+        input_nodes = [self.get_new_node(0.0, None, self.config.input_layer_nb) for index_in_layer in range(input_size)]
+        output_nodes = [self.get_new_node(0.0, None, self.config.output_layer_nb) for index_in_layer in range(output_size)]
 
-        inputs = [self.get_new_node(0.0, None, self.config.input_layer_nb) for index_in_layer in range(input_size)]
-        outputs = [self.get_new_node(0.0, None, self.config.output_layer_nb) for index_in_layer in range(output_size)]
-        
-        for input_node in inputs:
-            for output_node in outputs:
-                connection = ConnectionGene(input_node, output_node, enabled=True,
+        input_keys = [input_node.innovation_nb for input_node in input_nodes]
+        output_keys = [output_node.innovation_nb for output_node in output_nodes]
+
+        genome = Genome(self, input_keys, output_keys)
+
+        for input_node in input_nodes:
+            for output_node in output_nodes:
+                conn = ConnectionGene(input_node, output_node, enabled=True,
                     weight_rand_factor=self.config.weight_rand_factor)
                 
-                input_node.connections.append(connection)
-                genome.add_connection(connection)
+                input_node.connections.append(conn)
+                genome[conn.innovation_nb] = conn
 
-        genome.add_nodes(inputs)
-        genome.add_nodes(outputs)
+        genome.add_nodes(input_nodes)
+        genome.add_nodes(output_nodes)
 
         return genome
 
