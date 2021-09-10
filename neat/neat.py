@@ -178,7 +178,7 @@ class Neat:
             genome.fitness = fitness
 
 
-    def cycle_env(self, env, genomes, verbose, visualize):
+    def run_env(self, env, genomes, verbose, visualize):
         states = env.reset()
 
         done = False
