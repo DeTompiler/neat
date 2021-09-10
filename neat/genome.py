@@ -158,11 +158,11 @@ class Genome:
 
 
     def random_node(self):
-        return self.nodes[np.random.randint(0, len(self.nodes))]
+        return self.nodes.values()[random.randint(0, len(self.nodes) - 1)]
     
 
     def random_connection(self):
-        return self.connections[np.random.randint(0, len(self.connections))]
+        return self.connections.values()[random.randint(0, len(self.connections) - 1)]
 
 
     def toggle_random_connection(self):
