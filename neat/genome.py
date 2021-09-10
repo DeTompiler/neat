@@ -68,6 +68,10 @@ class Genome:
         return self.neat.config.output_activation(np.array([self.nodes[node_key].output for node_key in self.output_keys])).numpy()
 
 
+    def sort_nodes(self):
+        self.nodes = OrderedDict(sorted(self.nodes.items(), key=lambda tupl:tupl[1]))
+
+
     def reset_fitness(self):
         self.fitness = 0.0
         
