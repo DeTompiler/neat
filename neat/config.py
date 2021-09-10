@@ -24,7 +24,6 @@ class Config:
 
         self.weight_rand_factor = kwargs.get('weight_rand_factor', 1.)
         self.weight_shift_factor = kwargs.get('weight_shift_factor', 0.2)
-        self.similar_fitness_range = kwargs.get('similar_fitness_range', 0.04)
         self.add_conn_tries = kwargs.get('add_conn_tries', 100)
         self.input_layer_nb = kwargs.get('input_layer_nb', 0)
         self.output_layer_nb = kwargs.get('output_layer_nb', 256)
