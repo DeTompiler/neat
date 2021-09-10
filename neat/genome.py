@@ -140,17 +140,15 @@ class Genome:
 
 
     def mutate(self):
-        probabilities = np.random.rand(5) # 5 - number of possible mutations
-
-        if probabilities[0] < self.neat.config.toggle_conn_prob:
+        if random.random() < self.neat.config.toggle_conn_prob:
             self.toggle_random_connection()
-        if probabilities[1] < self.neat.config.shift_weight_prob:
+        if random.random() < self.neat.config.shift_weight_prob:
             self.shift_random_weight()
-        if probabilities[2] < self.neat.config.random_weight_prob:
+        if random.random() < self.neat.config.random_weight_prob:
             self.randomize_random_weight()
-        if probabilities[3] < self.neat.config.add_conn_prob:
+        if random.random() < self.neat.config.add_conn_prob:
             self.add_random_connection()
-        if probabilities[4] < self.neat.config.add_node_prob:
+        if random.random() < self.neat.config.add_node_prob:
             self.add_random_node()
 
 
