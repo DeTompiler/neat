@@ -311,7 +311,7 @@ class Neat:
 
         while not terminate:
             self.cycle_env(env, genomes, verbose, visualize)
-            # self.sort_genomes()
+            genomes = self.sort_genomes(genomes)
                
             if verbose == 1:
                 self.log(generation, genomes[0].fitness, final_log=False)
