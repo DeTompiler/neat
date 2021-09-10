@@ -56,6 +56,7 @@ class Genome:
 
 
     def forward(self, inputs):
+        self.reset_nodes()
         self.assign_inputs(inputs)
 
         for node in self.nodes.values():
