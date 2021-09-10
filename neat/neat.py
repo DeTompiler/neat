@@ -387,7 +387,7 @@ class Neat:
                     weight_rand_factor=self.config.weight_rand_factor)
                 
                 input_node.connections.append(conn)
-                genome[conn.innovation_nb] = conn
+                genome.connections[conn.innovation_nb] = conn
 
         genome.add_nodes(input_nodes)
         genome.add_nodes(output_nodes)
