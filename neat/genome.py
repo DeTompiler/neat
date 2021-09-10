@@ -1,9 +1,8 @@
-from collections import deque, OrderedDict
+from collections import OrderedDict
 import numpy as np
-from numpy.lib.function_base import copy
 from neat.connection_gene import ConnectionGene
-from neat.node_gene import NodeGene
 import pickle
+import random
 
 
 class Genome:
@@ -13,74 +12,60 @@ class Genome:
     FILE_EXT = 'gnc' # gnc - genome network configuration
 
 
-    def __init__(self, neat):
+    def __init__(self, neat, input_keys, output_keys):
         self.neat = neat
-        self.layers = OrderedDict()
-        self.nodes = deque()
-        self.connections = deque()
+        self.input_keys = input_keys
+        self.output_keys = output_keys
+        self.nodes = OrderedDict()
+        self.connections = OrderedDict()
         self.fitness = 0.0
 
 
-    def copy(self, copy_connections=True):
-        genome = Genome(self.neat)
+    def copy(self):
+        genome = Genome(self.neat, self.input_keys.copy(), self.output_keys.copy())
         genome.fitness = self.fitness
 
-        input_layer = self.layers[self.neat.config.input_layer_nb]
-        output_layer = self.layers[self.neat.config.output_layer_nb]
+        for node_key in self.input_keys:
+            genome.nodes[node_key] = self.nodes[node_key].copy()
+        for node_key in self.output_keys:
+            genome.nodes[node_key] = self.nodes[node_key].copy()
 
-        for node in input_layer:
-            genome.add_node(node.copy())
-        for node in output_layer:
-            genome.add_node(node.copy())
+        for conn in self.connections.values():
+            node_in = genome.nodes.get(conn.node_in.innovation_nb)
+            node_out = genome.nodes.get(conn.node_out.innovation_nb)
 
-        if copy_connections:
-            for connection in self.connections:
-                node_in = genome.get_node(connection.node_in.innovation_nb)
-                node_out = genome.get_node(connection.node_out.innovation_nb)
-
-                if node_in is None:
-                    node_in = connection.node_in.copy()
-                    genome.add_node(node_in)
-                if node_out is None:
-                    node_out = connection.node_out.copy()
-                    genome.add_node(node_out)
-                
-                copied_connection = connection.copy(node_in, node_out)
-                node_in.connections.append(copied_connection)
-                genome.add_connection(copied_connection)
+            if node_in is None:
+                node_in = conn.node_in.copy()
+                genome.nodes[node_in.innovation_nb]
+            if node_out is None:
+                node_out = conn.node_out.copy()
+                genome.nodes[node_out.innovation_nb]
+            
+            copied_connection = conn.copy(node_in, node_out)
+            node_in.connections.append(copied_connection)
+            genome.connections[copied_connection.innovation_nb] = copied_connection
 
         return genome
 
 
     def assign_inputs(self, inputs):
-        input_layer = self.layers[self.neat.config.input_layer_nb]
-        assert len(inputs) == len(input_layer)
+        assert len(inputs) == len(self.input_keys)
 
-        for node, input in zip(input_layer, inputs):
-            node.output = input
+        for node_key, input_value in zip(self.input_keys, inputs):
+            self.nodes[node_key].output = input_value
 
-
-    def layer_to_np_array(self, layer_nb):
-        layer = self.layers[layer_nb]     
-        return np.array([node.output for node in layer]) 
-    
 
     def forward(self, inputs):
         self.assign_inputs(inputs)
 
-        for layer in self.layers.values():
-            for node in layer:
-                node.apply_activation()
+        for node in self.nodes.values():
+            node.apply_activation()
+            
+            for conn in node.connections:
+                if conn.enabled:
+                    conn.node_out.output += float(conn.weight * node.output)
 
-                for connection in node.connections:
-                    if connection.enabled:
-                        connection.node_out.output += float(connection.weight * node.output)
-
-        output_layer = self.layers[self.neat.config.output_layer_nb]
-        if len(output_layer) == 1:
-            return self.neat.config.output_activation(output_layer[0].output).numpy()
-        
-        return self.neat.config.output_activation(self.layer_to_np_array(self.neat.config.output_layer_nb)).numpy()
+        return self.neat.config.output_activation(np.array([self.nodes[node_key].output for node_key in self.output_keys])).numpy()
 
 
     def reset_fitness(self):
@@ -88,7 +73,7 @@ class Genome:
         
 
     def reset_nodes(self):
-        for node in self.nodes:
+        for node in self.nodes.values():
             node.output = 0.0
 
 
@@ -119,58 +104,38 @@ class Genome:
         if copy:
             node = node.copy()
 
-        self.nodes.append(node)
+        self.nodes[node.innovation_nb] = node
 
-        if not node.layer_nb in self.layers:
-            layer_nbs = list(self.layers.keys())
-            self.layers[node.layer_nb] = deque([node])
-
-            for layer_nb in layer_nbs:
-                if layer_nb > node.layer_nb:
-                    self.layers.move_to_end(layer_nb)
-
-        else:
-            self.layers[node.layer_nb].append(node)
-    
 
     def add_nodes(self, nodes, copy=False, check_existence=False):
         for node in nodes:
             self.add_node(node, copy, check_existence)
         
 
-    def add_connection(self, connection, add_nodes=False, copy=False, check_existence=False):
-        if check_existence and self.connection_exists(connection.innovation_nb):
+    def add_connection(self, conn, add_nodes=False, check_existence=False):
+        if check_existence and conn.innovation_nb in self.connections:
             return
 
-        if copy:
-            connection = connection.copy()
-        
-        elif add_nodes:
-            node_in = self.get_node(connection.node_in.innovation_nb)
-            node_out = self.get_node(connection.node_out.innovation_nb)
+        if add_nodes:
+            node_in = self.nodes.get(conn.node_in.innovation_nb)
+            node_out = self.nodes.get(conn.node_out.innovation_nb)
 
             if node_in is None:
-                node_in = connection.node_in.copy()
-                self.add_node(node_in)
+                node_in = conn.node_in.copy()
+                self.nodes[node_in.innovation_nb] = node_in
             if node_out is None:
-                node_out = connection.node_out.copy()
-                self.add_node(node_out)
+                node_out = conn.node_out.copy()
+                self.nodes[node_out.innovation_nb] = node_out
             
-            connection = connection.copy(node_in, node_out)
-            node_in.connections.append(connection)
+            conn = conn.copy(node_in, node_out) # copied connection overrides conn argument
+            node_in.connections.append(conn)
 
-
-        for idx in range(len(self.connections)):
-            if connection.innovation_nb < self.connections[idx].innovation_nb:
-                self.connections.insert(idx, connection)
-                return
-
-        self.connections.append(connection)
+        self.connections[conn.innovation_nb] = conn
 
 
     def randomize_weights(self):
-        for connection in self.connections:
-            connection.random_weight(self.neat.config.weight_rand_factor)
+        for conn in self.connections.values():
+            conn.random_weight(self.neat.config.weight_rand_factor)
 
 
     def mutate(self):
@@ -197,8 +162,8 @@ class Genome:
 
 
     def toggle_random_connection(self):
-        connection = self.random_connection()
-        connection.enabled = not connection.enabled
+        conn = self.random_connection()
+        conn.enabled = not conn.enabled
 
 
     def randomize_random_weight(self):
@@ -224,69 +189,67 @@ class Genome:
                 if node_in.layer_nb > node_out.layer_nb:
                     node_in, node_out = node_out, node_in
                 
-                connection = ConnectionGene(node_in, node_out, enabled=True,
+                conn = ConnectionGene(node_in, node_out, enabled=True,
                     weight_rand_factor=self.neat.config.weight_rand_factor)
                 
-                node_in.connections.append(connection)
-                self.add_connection(connection)
+                node_in.connections.append(conn)
+                self.connections[conn.innovation_nb] = conn
                 
                 return
     
 
     def add_random_node(self):
-        connection = self.random_connection()
+        conn = self.random_connection()
 
         # new node
-        new_node = self.neat.get_node(connection)
+        new_node = self.neat.get_node(conn)
         
         # new connections
-        con1 = ConnectionGene(connection.node_in, new_node, weight=1, enabled=True)
-        con2 = ConnectionGene(new_node, connection.node_out, connection.weight, enabled=connection.enabled)
+        conn1 = ConnectionGene(conn.node_in, new_node, weight=1, enabled=True)
+        conn2 = ConnectionGene(new_node, conn.node_out, conn.weight, enabled=conn.enabled)
         
         # remove old connections
-        connection.node_in.remove_connection_to(connection.node_out)
+        conn.node_in.remove_connection_to(conn.node_out)
 
-        connection.node_in.connections.append(con1)
-        new_node.connections.append(con2)
-        self.add_connection(con1)
-        self.add_connection(con2)        
-        self.add_node(new_node)
+        conn.node_in.connections.append(conn1)
+        new_node.connections.append(conn2)
+        self.connections[conn1.innovation_nb] = conn1
+        self.connections[conn2.innovation_nb] = conn2
+        self.nodes[new_node.innovation_nb] = new_node
 
-        self.connections.remove(connection)
+        del self.connections[conn.innovation_nb]
 
 
     def distance(self, genome):
-        g1, g2 = (self, genome) if self.connections[-1].innovation_nb > genome.connections[-1].innovation_nb else (genome, self)
+        # required when treating disjoint and excess genes differently, most likely
+        # unnecessary and time consuming (may be removed in a future update)
+        g1, g2 = self, genome
+        max_innovation_nb1 = max([conn.innovation_nb for conn in g1.connections.values()])
+        max_innovation_nb2 = max([conn.innovation_nb for conn in g2.connections.values()])
 
-        idx1 = 0
-        idx2 = 0
-        len1 = len(g1.connections)
-        len2 = len(g2.connections)
+        if max_innovation_nb1 < max_innovation_nb2:
+            g1, g2 = g2, g1
+            max_innovation_nb1, max_innovation_nb2 = max_innovation_nb2, max_innovation_nb1
 
         similar_genes = 0
         disjoint_genes = 0
+        excess_genes = 0
         weight_diff = 0
 
-        while(idx1 < len1 and idx2 < len2):
-            con1 = g1.connections[idx1]
-            con2 = g2.connections[idx2]
-
-            if con1.innovation_nb == con2.innovation_nb:
+        for conn_key in g1.connections:
+            if conn_key in g2.connections: # similar gene
+                weight_diff += abs(g1.connections[conn_key].weight - g2.connections[conn_key].weight)
                 similar_genes += 1
-                weight_diff += abs(con1.weight - con2.weight)
-                idx1 += 1
-                idx2 += 1
-
-            elif con1.innovation_nb > con2.innovation_nb:
+            elif conn_key > max_innovation_nb2: # excess gene
+                excess_genes += 1
+            else: # disjoint gene
                 disjoint_genes += 1
-                idx2 += 1
-            else:
+            
+        for conn_key in g2.connections:
+            if conn_key not in g1.connections:
                 disjoint_genes += 1
-                idx1 += 1    
 
-        avg_weight_diff = weight_diff / similar_genes if similar_genes > 0 else 0
-        excess_genes = len(g1.connections) - idx1
-
+        avg_weight_diff = (weight_diff / similar_genes) if similar_genes > 0 else 0
         genes_nb = max(len(g1.connections), len(g2.connections))
         genes_nb = 1 if genes_nb < 20 else genes_nb
 
@@ -296,59 +259,19 @@ class Genome:
 
 
     def crossover(self, genome):
-        g1, g2 = (self, genome) if self.fitness >= genome.fitness else (genome, self)
-        similar_fitness = self.similar_fitness(genome)
-
-        idx1, idx2 = 0, 0
-        len1, len2 = len(g1.connections), len(g2.connections)
-
-        offspring = self.neat.base_genome.copy(copy_connections=False)
-
-        while idx1 < len1 and idx2 < len2:
-            con1 = g1.connections[idx1]
-            con2 = g2.connections[idx2]
-
-            if con1.innovation_nb == con2.innovation_nb:
-                con = con1 if np.random.rand() > 0.5 else con2
-
-                offspring.add_connection(con, add_nodes=True, copy=False, check_existence=False)
-
-                idx1 += 1
-                idx2 += 1
-
-            elif con1.innovation_nb > con2.innovation_nb:
-                # disjoint of g2
-                if similar_fitness:
-                    offspring.add_connection(con2, add_nodes=True, copy=False, check_existence=False)
-                
-                idx2 += 1
-            else:
-                # disjoint of g1
-                offspring.add_connection(con1, add_nodes=True, copy=False, check_existence=False)
-                idx1 += 1
-
-        
-        for idx in range(idx1, len1):
-            con = g1.connections[idx]
-            offspring.add_connection(con, add_nodes=True, copy=False, check_existence=False)
-        
-        if similar_fitness:
-            for idx in range(idx2, len2):
-                con = g2.connections[idx]
-                offspring.add_connection(con, add_nodes=True, copy=False, check_existence=False)
-
-
-        return offspring
-
-
-    def similar_fitness(self, genome):
-        if self.fitness == genome.fitness:
-            return True
-        
-        # g1 has better fitness than g2
         g1, g2 = (self, genome) if self.fitness > genome.fitness else (genome, self)
 
-        return g2.fitness > (g1.fitness - g1.fitness * self.neat.config.similar_fitness_range) < g2.fitness
+        offspring = self.neat.base_genome.copy()
+
+        for conn_key in g1.connections:
+            if conn_key in g2.connections: # similar gene
+                conn = g1.connections[conn_key] if random.random() > 0.5 else g2.connections[conn_key]
+                offspring.add_connection(conn, add_nodes=True, check_existence=True)
+
+            else: # disjoint or excess gene (which one does not matter for this function)
+                offspring.add_connection(g1.connections[conn_key], add_nodes=True, check_existence=True)
+
+        return offspring
 
 
     def __str__(self):
