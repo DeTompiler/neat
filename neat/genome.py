@@ -70,7 +70,7 @@ class Genome:
 
 
     def sort_nodes(self):
-        self.nodes = OrderedDict(sorted(self.nodes.items(), key=lambda tupl:tupl[1]))
+        self.nodes = OrderedDict(sorted(self.nodes.items(), key=lambda tupl:tupl[1].layer_nb))
 
 
     def reset_nodes(self):
