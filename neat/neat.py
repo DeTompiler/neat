@@ -171,11 +171,6 @@ class Neat:
                 predictions[idx] = genome.forward(inputs[idx])
             
         return predictions
-    
-
-    def reset_all_nodes(self, genomes):
-        for genome in genomes:
-            genome.reset_nodes()
 
     
     def set_genomes_fitness(self, genomes, fitnesses):
@@ -197,8 +192,6 @@ class Neat:
                 env.render()
 
             next_states, scores, genomes_alive, done = env.step(self.forward_all(genomes, states, genomes_alive))
-
-            self.reset_all_nodes(genomes)
             states = next_states
         
         self.set_genomes_fitness(genomes, scores)
