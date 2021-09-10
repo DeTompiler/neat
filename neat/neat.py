@@ -183,9 +183,9 @@ class Neat:
             genome.reset_fitness()
 
     
-    def add_fitness(self, genomes, scores):
-        for genome, score in zip(genomes, scores):
-            genome.fitness += score
+    def set_genomes_fitness(self, genomes, fitnesses):
+        for genome, fitness in zip(genomes, fitnesses):
+            genome.fitness = fitness
 
 
     def cycle_env(self, env, genomes, verbose, visualize):
@@ -206,7 +206,7 @@ class Neat:
             self.reset_all_nodes(genomes)
             states = next_states
         
-        self.add_fitness(genomes, scores)
+        self.set_genomes_fitness(genomes, scores)
     
 
     def set_genomes(self, genomes):
