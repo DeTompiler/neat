@@ -72,10 +72,6 @@ class Genome:
         self.nodes = OrderedDict(sorted(self.nodes.items(), key=lambda tupl:tupl[1]))
 
 
-    def reset_fitness(self):
-        self.fitness = 0.0
-        
-
     def reset_nodes(self):
         for node in self.nodes.values():
             node.output = 0.0

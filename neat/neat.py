@@ -176,11 +176,6 @@ class Neat:
     def reset_all_nodes(self, genomes):
         for genome in genomes:
             genome.reset_nodes()
-        
-
-    def reset_all_fitness(self, genomes):
-        for genome in genomes:
-            genome.reset_fitness()
 
     
     def set_genomes_fitness(self, genomes, fitnesses):
@@ -290,7 +285,6 @@ class Neat:
                 break
             
             terminate = self.evolve()
-            self.reset_all_fitness(self.genomes)
             self.generation += 1
         
         if visualize:
@@ -326,7 +320,6 @@ class Neat:
             if terminate:
                 break
             
-            self.reset_all_fitness(self.genomes)
             generation += 1
         
         if visualize:
