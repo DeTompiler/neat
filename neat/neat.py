@@ -176,9 +176,15 @@ class Neat:
     def set_genomes_fitness(self, genomes, fitnesses):
         for genome, fitness in zip(genomes, fitnesses):
             genome.fitness = fitness
+    
+
+    def sort_genome_nodes(self, genomes):
+        for genome in genomes:
+            genome.sort_nodes()
 
 
     def run_env(self, env, genomes, verbose, visualize):
+        self.sort_genome_nodes(genomes)
         states = env.reset()
 
         done = False
