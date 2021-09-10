@@ -260,7 +260,7 @@ class Neat:
         terminate = False
 
         while not terminate:
-            self.cycle_env(env, self.genomes, verbose, visualize)
+            self.run_env(env, self.genomes, verbose, visualize)
             self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:
@@ -297,7 +297,7 @@ class Neat:
         terminate = False
 
         while not terminate:
-            self.cycle_env(env, genomes, verbose, visualize)
+            self.run_env(env, genomes, verbose, visualize)
             genomes = self.sort_genomes(genomes)
                
             if verbose == 1:
