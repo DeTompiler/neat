@@ -159,8 +159,8 @@ class Neat:
         return True
 
         
-    def sort_genomes(self):
-        self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
+    def sort_genomes(self, genomes):
+        return sorted(genomes, key=lambda genome: genome.fitness, reverse=True)
     
 
     def forward_all(self, genomes, inputs, genomes_alive):
@@ -276,7 +276,7 @@ class Neat:
             callback_args['generation'] = self.generation
 
             self.cycle_env(env, self.genomes, verbose, visualize)
-            self.sort_genomes()
+            self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:
                 self.log(self.generation, self.genomes[0].fitness, final_log=False)
@@ -345,7 +345,7 @@ class Neat:
 
     def best_genomes(self, top=1, sort=True, top_one_as_genome=False):
         if sort:
-            self.sort_genomes()
+            self.genomes = self.sort_genomes(self.genomes)
         
         if top_one_as_genome and top == 1:
             return self.genomes[0]
