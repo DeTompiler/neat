@@ -269,12 +269,9 @@ class Neat:
     def fit(self, env, callbacks=[], verbose=0, visualize=False):
         termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
         
-        callback_args = {'neat':self, 'generation':self.generation}
         terminate = False
 
         while not terminate:
-            callback_args['generation'] = self.generation
-
             self.cycle_env(env, self.genomes, verbose, visualize)
             self.genomes = self.sort_genomes(self.genomes)
                
@@ -282,10 +279,10 @@ class Neat:
                 self.log(self.generation, self.genomes[0].fitness, final_log=False)
 
             for callback in other_callbacks:
-                callback(callback_args)
+                callback(neat=self, generation=self.generation)
 
             for t_callback in termination_callbacks:
-                if t_callback(callback_args):
+                if t_callback(neat=self, generation=self.generation):
                     terminate = True
                     break
             
@@ -310,12 +307,9 @@ class Neat:
             genome.neat = self
 
         generation = 1
-        callback_args = {'neat':self, 'generation':generation}
         terminate = False
 
         while not terminate:
-            callback_args['generation'] = generation
-
             self.cycle_env(env, genomes, verbose, visualize)
             # self.sort_genomes()
                
@@ -323,10 +317,10 @@ class Neat:
                 self.log(generation, genomes[0].fitness, final_log=False)
 
             for callback in other_callbacks:
-                callback(callback_args)
+                callback(neat=self, generation=generation)
 
             for t_callback in termination_callbacks:
-                if t_callback(callback_args):
+                if t_callback(neat=self, generation=generation):
                     terminate = True
             
             if terminate:

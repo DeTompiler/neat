@@ -14,9 +14,9 @@ class GenomeSaving():
         [os.path.join(dir, f'genome-{idx}.{Genome.FILE_EXT}' if self.override else f'genome-{idx}') for idx in range(top)]
 
 
-    def __call__(self, dict_args):
-        neat = dict_args['neat']
-        generation = dict_args['generation']
+    def __call__(self, **kwargs):
+        neat = kwargs['neat']
+        generation = kwargs['generation']
 
         if self.best_only:
             best_genome = neat.genomes[0]
@@ -44,9 +44,9 @@ class FileLogger():
         self.data = deque()
 
     
-    def __call__(self, dict_args):
-        neat = dict_args['neat']
-        generation = dict_args['generation']
+    def __call__(self, **kwargs):
+        neat = kwargs['neat']
+        generation = kwargs['generation']
 
         self.data.append(f'Gen {generation},{",".join([str(neat.genomes[idx].fitness) for idx in range(self.top)])}\n')
         
@@ -69,9 +69,8 @@ class GenerationTermination(TerminationCallback):
         self.stop_at = stop_at
 
 
-    def __call__(self, dict_args):
-        generation = dict_args['generation']
-        return generation >= self.stop_at
+    def __call__(self, **kwargs):
+        return kwargs['generation'] >= self.stop_at
 
 
 class FitnessTermination(TerminationCallback):
@@ -80,8 +79,8 @@ class FitnessTermination(TerminationCallback):
         self.top = top
     
 
-    def __call__(self, dict_args):
-        neat = dict_args['neat']
+    def __call__(self, **kwargs):
+        neat = kwargs['neat']
 
         for idx in range(self.top):
             if neat.genomes[idx].fitness < self.termination_fitness:
@@ -97,6 +96,6 @@ class TimeTermination(TerminationCallback):
         self.start_time = time.perf_counter()
 
 
-    def __call__(self, dict_args):
+    def __call__(self, **kwargs):
         return (time.perf_counter() - self.start_time) >= self.run_time
 
