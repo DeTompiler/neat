@@ -11,6 +11,7 @@ import numpy as np
 from neat.callbacks import TerminationCallback, EnvStopper
 from neat.config import Config
 from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
 
 
 class Neat:
@@ -204,6 +205,38 @@ class Neat:
         
         self.set_genomes_fitness(genomes, scores)
     
+        return False
+
+
+    def run_env_threaded(self, env, genomes, nb_threads, env_stopper, visualize, env_args=()):
+        Env = env.__class__
+        threads = []
+
+        genomes_per_thread = len(genomes) // nb_threads
+        complementary_genomes = len(genomes) - nb_threads * genomes_per_thread
+
+        cut_idx = genomes_per_thread + complementary_genomes
+
+        executor = ThreadPoolExecutor()
+
+        for idx in range(1, nb_threads):
+            threaded_env = Env(genomes_per_thread, *env_args)
+
+            # thread (called future)
+            threads.append(executor.submit(self.run_env, threaded_env, genomes[cut_idx:cut_idx + genomes_per_thread], env_stopper, False))
+            cut_idx += genomes_per_thread
+
+        terminate = self.run_env(Env(genomes_per_thread, *env_args), genomes[:genomes_per_thread + complementary_genomes], env_stopper, visualize)
+
+        executor.shutdown(wait=True)
+
+        if terminate:
+            return True
+        
+        for thread in threads:
+            if thread.result():
+                return True
+        
         return False
 
 
