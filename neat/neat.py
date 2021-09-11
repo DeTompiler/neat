@@ -10,7 +10,7 @@ import random
 import numpy as np
 from neat.callbacks import TerminationCallback, EnvStopper
 from neat.config import Config
-import math
+from threading import Thread
 
 
 class Neat:
@@ -182,7 +182,7 @@ class Neat:
             genome.sort_nodes()
 
 
-    def run_env(self, env, genomes, env_stopper, generation, verbose, visualize):
+    def run_env(self, env, genomes, env_stopper, visualize):
         self.sort_genome_nodes(genomes)
         states = env.reset()
 
@@ -195,9 +195,6 @@ class Neat:
                 if env_stopper.differentiate_genomes:
                     self.set_genomes_fitness(genomes, [1 if genome_alive else 0 for genome_alive in genomes_alive])
                 return True
-
-            if verbose == 2:
-                self.log(generation, top_fitness=None, step=step, final_log=False)
 
             if visualize:
                 env.render()
@@ -277,7 +274,7 @@ class Neat:
         terminate = False
 
         while not terminate:
-            terminate = self.run_env(env, self.genomes, env_stopper, self.generation, verbose, visualize)
+            terminate = self.run_env(env, self.genomes, env_stopper, visualize)
             self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:
@@ -311,7 +308,7 @@ class Neat:
         terminate = False
 
         while not terminate:
-            terminate = self.run_env(env, genomes, env_stopper, generation, verbose, visualize)
+            terminate = self.run_env(env, genomes, env_stopper, visualize)
             genomes = self.sort_genomes(genomes)
                
             if verbose == 1:
