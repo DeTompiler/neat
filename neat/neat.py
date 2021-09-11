@@ -226,7 +226,8 @@ class Neat:
             threads.append(executor.submit(self.run_env, threaded_env, genomes[cut_idx:cut_idx + genomes_per_thread], env_stopper, False))
             cut_idx += genomes_per_thread
 
-        terminate = self.run_env(Env(genomes_per_thread, *env_args), genomes[:genomes_per_thread + complementary_genomes], env_stopper, visualize)
+        terminate = self.run_env(Env(genomes_per_thread + complementary_genomes, *env_args),
+            genomes[:genomes_per_thread + complementary_genomes], env_stopper, visualize)
 
         executor.shutdown(wait=True)
 
