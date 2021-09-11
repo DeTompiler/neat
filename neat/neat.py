@@ -183,7 +183,6 @@ class Neat:
 
 
     def run_env(self, env, genomes, env_stopper, visualize):
-        self.sort_genome_nodes(genomes)
         states = env.reset()
 
         step = 0
@@ -206,7 +205,7 @@ class Neat:
         self.set_genomes_fitness(genomes, scores)
     
         return False
-    
+
 
     def set_genomes(self, genomes):
         self.genomes = genomes        
@@ -274,6 +273,7 @@ class Neat:
         terminate = False
 
         while not terminate:
+            self.sort_genome_nodes(self.genomes)
             terminate = self.run_env(env, self.genomes, env_stopper, visualize)
             self.genomes = self.sort_genomes(self.genomes)
                
@@ -308,6 +308,7 @@ class Neat:
         terminate = False
 
         while not terminate:
+            self.sort_genome_nodes(genomes)
             terminate = self.run_env(env, genomes, env_stopper, visualize)
             genomes = self.sort_genomes(genomes)
                
