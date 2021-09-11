@@ -208,7 +208,7 @@ class Neat:
         return False
 
 
-    def run_env_threaded(self, env, genomes, nb_threads, env_stopper, visualize, env_args=()):
+    def run_env_threaded(self, env, genomes, nb_threads, env_stopper, visualize, env_args):
         Env = env.__class__
         threads = []
 
@@ -300,14 +300,21 @@ class Neat:
         return species_spawns
 
 
-    def fit(self, env, callbacks=[], verbose=0, visualize=False):
+    def fit(self, env, callbacks=[], threads=1, verbose=0, visualize=False, env_args=()):
         termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
         
         terminate = False
 
+        if threads > 1:
+            run_env = self.run_env_threaded
+            run_env_args = (env, self.genomes, threads, env_stopper, visualize, env_args)
+        else:
+            run_env = self.run_env
+            run_env_args = (env, self.genomes, env_stopper, visualize)
+
         while not terminate:
             self.sort_genome_nodes(self.genomes)
-            terminate = self.run_env(env, self.genomes, env_stopper, visualize)
+            terminate = run_env(*run_env_args)
             self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:
