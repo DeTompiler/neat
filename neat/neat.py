@@ -8,7 +8,7 @@ from neat.node_gene import NodeGene
 from neat.species import Species
 import random
 import numpy as np
-from neat.callbacks import TerminationCallback
+from neat.callbacks import TerminationCallback, EnvStopper
 from neat.config import Config
 import math
 
@@ -182,14 +182,18 @@ class Neat:
             genome.sort_nodes()
 
 
-    def run_env(self, env, genomes, verbose, visualize):
+    def run_env(self, env, genomes, env_stopper, verbose, visualize):
         self.sort_genome_nodes(genomes)
         states = env.reset()
 
+        step = 0
         done = False
         genomes_alive = [True for genome in genomes]
 
         while not done:
+            if env_stopper is not None and env_stopper(step):
+                True
+
             if verbose == 2:
                 self.log(None, None, final_log=False)
 
@@ -198,8 +202,11 @@ class Neat:
 
             next_states, scores, genomes_alive, done = env.step(self.forward_all(genomes, states, genomes_alive))
             states = next_states
+            step += 1
         
         self.set_genomes_fitness(genomes, scores)
+    
+        return False
     
 
     def set_genomes(self, genomes):
@@ -219,6 +226,7 @@ class Neat:
     def handle_callbacks(self, callbacks):
         termination_callbacks = []
         other_callbacks = []
+        env_stopper = None
 
         termination_callbacks = []
         other_callbacks = []
@@ -226,10 +234,12 @@ class Neat:
         for callback in callbacks:
             if isinstance(callback, TerminationCallback):
                 termination_callbacks.append(callback)
+            elif isinstance(callback, EnvStopper):
+                env_stopper = callback
             else:
                 other_callbacks.append(callback)     
 
-        return termination_callbacks, other_callbacks  
+        return termination_callbacks, other_callbacks, env_stopper
 
 
     def compute_species_spawn(self):
@@ -256,12 +266,12 @@ class Neat:
 
 
     def fit(self, env, callbacks=[], verbose=0, visualize=False):
-        termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
+        termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
         
         terminate = False
 
         while not terminate:
-            self.run_env(env, self.genomes, verbose, visualize)
+            terminate = self.run_env(env, self.genomes, env_stopper, verbose, visualize)
             self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:
@@ -289,13 +299,13 @@ class Neat:
 
 
     def test(self, env, genomes, callbacks=[], verbose=0, visualize=False):
-        termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
+        termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
 
         generation = 1
         terminate = False
 
         while not terminate:
-            self.run_env(env, genomes, verbose, visualize)
+            terminate = self.run_env(env, genomes, env_stopper, verbose, visualize)
             genomes = self.sort_genomes(genomes)
                
             if verbose == 1:
