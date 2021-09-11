@@ -56,7 +56,6 @@ class Genome:
 
 
     def forward(self, inputs):
-        self.reset_nodes()
         self.assign_inputs(inputs)
 
         for node in self.nodes.values():
@@ -66,7 +65,10 @@ class Genome:
                 if conn.enabled:
                     conn.node_out.output += float(conn.weight * node.output)
 
-        return self.neat.config.output_activation(np.array([self.nodes[node_key].output for node_key in self.output_keys])).numpy()
+        outputs = self.neat.config.output_activation(np.array([self.nodes[node_key].output for node_key in self.output_keys])).numpy()
+        self.reset_nodes()
+
+        return outputs
 
 
     def sort_nodes(self):
