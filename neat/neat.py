@@ -182,7 +182,7 @@ class Neat:
             genome.sort_nodes()
 
 
-    def run_env(self, env, genomes, env_stopper, verbose, visualize):
+    def run_env(self, env, genomes, env_stopper, generation, verbose, visualize):
         self.sort_genome_nodes(genomes)
         states = env.reset()
 
@@ -197,7 +197,7 @@ class Neat:
                 return True
 
             if verbose == 2:
-                self.log(None, None, final_log=False)
+                self.log(generation, top_fitness=None, step=step, final_log=False)
 
             if visualize:
                 env.render()
@@ -216,11 +216,15 @@ class Neat:
         self.generate_species()
 
 
-    def log(self, generation, top_fitness, clear_line=True, final_log=False):
+    def log(self, generation, top_fitness=None, step=None, nb_species=None, clear_line=True, final_log=False):
         clear_log = '\033[2K' if clear_line else ''
         log_end = '\n' if final_log else '\r'
 
-        log = clear_log + f'generation = {generation}, top_fitness = {top_fitness}'
+        step_log = f', step = {step}' if step is not None else ''
+        species_log = f', species = {nb_species}' if nb_species is not None else ''
+        top_fitness_log = f', top_fitness = {top_fitness}' if top_fitness is not None else ''
+
+        log = clear_log + f'generation = {generation}{step_log}{species_log}{top_fitness_log}'
 
         print(log, end=log_end)
     
@@ -273,11 +277,11 @@ class Neat:
         terminate = False
 
         while not terminate:
-            terminate = self.run_env(env, self.genomes, env_stopper, verbose, visualize)
+            terminate = self.run_env(env, self.genomes, env_stopper, self.generation, verbose, visualize)
             self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:
-                self.log(self.generation, self.genomes[0].fitness, final_log=False)
+                self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=False)
 
             for callback in other_callbacks:
                 callback(neat=self, generation=self.generation)
@@ -297,7 +301,7 @@ class Neat:
             env.close()
         
         if verbose > 0:
-            self.log(self.generation, self.genomes[0].fitness, final_log=True)
+            self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=True)
 
 
     def test(self, env, genomes, callbacks=[], verbose=0, visualize=False):
@@ -307,11 +311,11 @@ class Neat:
         terminate = False
 
         while not terminate:
-            terminate = self.run_env(env, genomes, env_stopper, verbose, visualize)
+            terminate = self.run_env(env, genomes, env_stopper, generation, verbose, visualize)
             genomes = self.sort_genomes(genomes)
                
             if verbose == 1:
-                self.log(generation, genomes[0].fitness, final_log=False)
+                self.log(generation, top_fitness=genomes[0].fitness, final_log=False)
 
             for callback in other_callbacks:
                 callback(neat=self, generation=generation)
@@ -329,7 +333,7 @@ class Neat:
             env.close()
         
         if verbose > 0:
-            self.log(generation, self.genomes[0].fitness, final_log=True)
+            self.log(generation, top_fitness=genomes[0].fitness, final_log=True)
 
 
 
