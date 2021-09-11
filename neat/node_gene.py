@@ -1,5 +1,4 @@
 from neat.gene import Gene
-from collections import deque
 
 
 class NodeGene(Gene):
@@ -10,14 +9,14 @@ class NodeGene(Gene):
 
     def __init__(self, innovation_nb, connections=None, output=0, activation=None, layer_nb=0):
         super().__init__(innovation_nb)
-        self.connections = deque() if connections is None else connections
+        self.connections = [] if connections is None else connections
         self.output = output
         self.activation = activation
         self.layer_nb = layer_nb
 
 
     def copy(self, copy_connections=False):
-        connections = self.connections if copy_connections else deque()
+        connections = self.connections if copy_connections else []
 
         return NodeGene(self.innovation_nb, connections, self.output, self.activation, self.layer_nb)
     

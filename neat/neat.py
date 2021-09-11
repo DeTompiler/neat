@@ -1,6 +1,5 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-from collections import deque
 from neat.callbacks import TerminationCallback
 import pickle
 from neat.connection_gene import ConnectionGene
@@ -35,7 +34,7 @@ class Neat:
         self.base_genome = self.create_base_genome(self.input_size, self.output_size)
         
         self.genomes = []
-        self.species = deque()
+        self.species = []
 
         self.generation = 1
         
@@ -66,7 +65,7 @@ class Neat:
     
 
     def new_representatives(self):
-        representatives = deque()
+        representatives = []
 
         for species in self.species:
             representative = species.representative
@@ -110,7 +109,7 @@ class Neat:
     
 
     def eliminate_genomes(self, sort_species=False):
-        remaining_species = deque()
+        remaining_species = []
 
         for species in self.species:
             species.update_stagnation(self.generation)
@@ -361,7 +360,7 @@ class Neat:
 
     def load_genomes(self, path):
         with open(path, 'rb') as file:
-            return deque(pickle.load(file))
+            return pickle.load(file)
                 
 
     def create_base_genome(self, input_size, output_size):

@@ -1,4 +1,3 @@
-from collections import deque
 import math
 import random
 
@@ -6,7 +5,7 @@ import random
 class Species:
     def __init__(self, representative):
         self.representative = representative
-        self.genomes = deque([representative])
+        self.genomes = [representative]
         self.fitness = None
         self.max_fitness = None
         self.last_improvement = None
@@ -88,5 +87,5 @@ class Species:
 
     def reset(self, representative=None):
         self.representative = self.random_genome(fitness_prob=False) if representative is None else representative
-        self.genomes = deque([self.representative])
+        self.genomes = [self.representative]
         self.fitness = None

@@ -1,7 +1,6 @@
 from neat.genome import Genome
 import os.path
 import time
-from collections import deque
 
 
 class GenomeSaving():
@@ -41,7 +40,7 @@ class FileLogger():
     def __init__(self, filepath, population, top=1):
         self.filepath = filepath
         self.top = top if top is not None else population
-        self.data = deque()
+        self.data = []
 
     
     def __call__(self, **kwargs):
