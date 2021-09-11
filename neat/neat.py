@@ -192,7 +192,7 @@ class Neat:
 
         while not done:
             if env_stopper is not None and env_stopper(step):
-                True
+                return True
 
             if verbose == 2:
                 self.log(None, None, final_log=False)
