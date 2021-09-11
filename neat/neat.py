@@ -306,13 +306,6 @@ class Neat:
         
         terminate = False
 
-        if threads > 1:
-            run_env = self.run_env_threaded
-            run_env_args = (env, self.genomes, threads, env_stopper, visualize, env_args)
-        else:
-            run_env = self.run_env
-            run_env_args = (env, self.genomes, env_stopper, visualize)
-
         while not terminate:
             self.sort_genome_nodes(self.genomes)
 
