@@ -262,7 +262,7 @@ class Genome:
     def crossover(self, neat, genome):
         g1, g2 = (self, genome) if self.fitness > genome.fitness else (genome, self)
 
-        offspring = neat.base_genome.copy()
+        offspring = neat.base_genome.copy(copy_connections=False)
 
         for conn_key in g1.connections:
             if conn_key in g2.connections: # similar gene
