@@ -17,7 +17,7 @@ class Genome:
         self.input_keys = input_keys
         self.output_keys = output_keys
         self.nodes = OrderedDict()
-        self.connections = OrderedDict()
+        self.connections = {}
         self.fitness = 0.0
 
 
