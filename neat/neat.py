@@ -202,7 +202,7 @@ class Neat:
             next_states, scores, genomes_alive, done = env.step(self.forward_all(genomes, states, genomes_alive))
             states = next_states
             step += 1
-        
+
         self.set_genomes_fitness(genomes, scores)
     
         return False
@@ -315,7 +315,12 @@ class Neat:
 
         while not terminate:
             self.sort_genome_nodes(self.genomes)
-            terminate = run_env(*run_env_args)
+
+            if threads > 1:
+                terminate = self.run_env_threaded(env, self.genomes, threads, env_stopper, visualize, env_args)
+            else:
+                terminate = self.run_env(env, self.genomes, env_stopper, visualize)
+
             self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:

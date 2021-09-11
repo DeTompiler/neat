@@ -67,10 +67,10 @@ class Species:
 
         for genome in self.genomes:
             genome.fitness /= species_size
-    
+
 
     def compute_fitness(self):
-        self.fitness = 0
+        self.fitness = 0.0
 
         for genome in self.genomes:
             self.fitness += genome.fitness
