@@ -20,7 +20,7 @@ class Genome:
         self.fitness = 0.0
 
 
-    def copy(self):
+    def copy(self, copy_connections=True):
         genome = Genome(self.input_keys.copy(), self.output_keys.copy())
         genome.fitness = self.fitness
 
@@ -29,20 +29,21 @@ class Genome:
         for node_key in self.output_keys:
             genome.nodes[node_key] = self.nodes[node_key].copy()
 
-        for conn in self.connections.values():
-            node_in = genome.nodes.get(conn.node_in.innovation_nb)
-            node_out = genome.nodes.get(conn.node_out.innovation_nb)
+        if copy_connections:
+            for conn in self.connections.values():
+                node_in = genome.nodes.get(conn.node_in.innovation_nb)
+                node_out = genome.nodes.get(conn.node_out.innovation_nb)
 
-            if node_in is None:
-                node_in = conn.node_in.copy()
-                genome.nodes[node_in.innovation_nb]
-            if node_out is None:
-                node_out = conn.node_out.copy()
-                genome.nodes[node_out.innovation_nb]
-            
-            copied_connection = conn.copy(node_in, node_out)
-            node_in.connections.append(copied_connection)
-            genome.connections[copied_connection.innovation_nb] = copied_connection
+                if node_in is None:
+                    node_in = conn.node_in.copy()
+                    genome.nodes[node_in.innovation_nb]
+                if node_out is None:
+                    node_out = conn.node_out.copy()
+                    genome.nodes[node_out.innovation_nb]
+                
+                copied_connection = conn.copy(node_in, node_out)
+                node_in.connections.append(copied_connection)
+                genome.connections[copied_connection.innovation_nb] = copied_connection
 
         return genome
 
