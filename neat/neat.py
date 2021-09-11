@@ -61,7 +61,7 @@ class Neat:
 
     def mutate_genomes(self):
         for genome in self.genomes:
-            genome.mutate()
+            genome.mutate(self)
     
 
     def new_representatives(self):
@@ -73,7 +73,7 @@ class Neat:
             most_compatible_genome = None
 
             for genome in self.genomes:
-                curr_distance = genome.distance(representative)
+                curr_distance = genome.distance(self, representative)
                 
                 if smallest_distance is None or curr_distance < smallest_distance:
                     smallest_distance = curr_distance
@@ -98,7 +98,7 @@ class Neat:
             found = False
 
             for species in self.species:
-                if species.add_genome(genome, check_compatibility=True):
+                if species.add_genome(self, genome, check_compatibility=True):
                     found = True
                     break
             
@@ -120,7 +120,7 @@ class Neat:
             elif sort_species:
                 species.sort()
 
-            species.kill(1 - self.config.survivors, kill_in_neat=True)
+            species.kill(self, 1 - self.config.survivors, kill_in_neat=True)
 
             remaining_species.append(species)
 
@@ -139,10 +139,10 @@ class Neat:
 
         for species, spawn in zip(self.species, species_spawn):
             for idx in range(spawn):
-                genome = species.breed()
+                genome = species.breed(self)
             
                 self.genomes.append(genome)
-                species.add_genome(genome, check_compatibility=False)
+                species.add_genome(self, genome, check_compatibility=False)
 
 
     def evolve(self):
@@ -167,7 +167,7 @@ class Neat:
 
         for idx, genome in enumerate(genomes):
             if genomes_alive[idx]:
-                predictions[idx] = genome.forward(inputs[idx])
+                predictions[idx] = genome.forward(self, inputs[idx])
             
         return predictions
 
@@ -203,11 +203,7 @@ class Neat:
     
 
     def set_genomes(self, genomes):
-        self.genomes = genomes
-
-        for genome in self.genomes:
-            genome.neat = self
-        
+        self.genomes = genomes        
         self.generate_species()
 
 
@@ -294,9 +290,6 @@ class Neat:
 
     def test(self, env, genomes, callbacks=[], verbose=0, visualize=False):
         termination_callbacks, other_callbacks = self.handle_callbacks(callbacks)
-        
-        for genome in genomes:
-            genome.neat = self
 
         generation = 1
         terminate = False
@@ -352,10 +345,7 @@ class Neat:
 
     def save_genomes(self, path):
         with open(path, 'wb') as file:
-            for genome in self.genomes:
-                genome.neat = None
-                pickle.dump(genome, file)
-                genome.neat = self
+            pickle.dump(self.genomes, file)
 
 
     def load_genomes(self, path):
@@ -370,7 +360,7 @@ class Neat:
         input_keys = [input_node.innovation_nb for input_node in input_nodes]
         output_keys = [output_node.innovation_nb for output_node in output_nodes]
 
-        genome = Genome(self, input_keys, output_keys)
+        genome = Genome(input_keys, output_keys)
 
         for input_node in input_nodes:
             for output_node in output_nodes:

@@ -12,8 +12,7 @@ class Genome:
     FILE_EXT = 'gnc' # gnc - genome network configuration
 
 
-    def __init__(self, neat, input_keys, output_keys):
-        self.neat = neat
+    def __init__(self, input_keys, output_keys):
         self.input_keys = input_keys
         self.output_keys = output_keys
         self.nodes = OrderedDict()
@@ -22,7 +21,7 @@ class Genome:
 
 
     def copy(self):
-        genome = Genome(self.neat, self.input_keys.copy(), self.output_keys.copy())
+        genome = Genome(self.input_keys.copy(), self.output_keys.copy())
         genome.fitness = self.fitness
 
         for node_key in self.input_keys:
@@ -55,7 +54,7 @@ class Genome:
             self.nodes[node_key].output = input_value
 
 
-    def forward(self, inputs):
+    def forward(self, neat, inputs):
         self.assign_inputs(inputs)
 
         for node in self.nodes.values():
@@ -65,7 +64,7 @@ class Genome:
                 if conn.enabled:
                     conn.node_out.output += float(conn.weight * node.output)
 
-        outputs = self.neat.config.output_activation(np.array([self.nodes[node_key].output for node_key in self.output_keys])).numpy()
+        outputs = neat.config.output_activation(np.array([self.nodes[node_key].output for node_key in self.output_keys])).numpy()
         self.reset_nodes()
 
         return outputs
@@ -136,22 +135,22 @@ class Genome:
         self.connections[conn.innovation_nb] = conn
 
 
-    def randomize_weights(self):
+    def randomize_weights(self, neat):
         for conn in self.connections.values():
-            conn.random_weight(self.neat.config.weight_rand_factor)
+            conn.random_weight(neat.config.weight_rand_factor)
 
 
-    def mutate(self):
-        if random.random() < self.neat.config.toggle_conn_prob:
+    def mutate(self, neat):
+        if random.random() < neat.config.toggle_conn_prob:
             self.toggle_random_connection()
-        if random.random() < self.neat.config.shift_weight_prob:
-            self.shift_random_weight()
-        if random.random() < self.neat.config.random_weight_prob:
-            self.randomize_random_weight()
-        if random.random() < self.neat.config.add_conn_prob:
-            self.add_random_connection()
-        if random.random() < self.neat.config.add_node_prob:
-            self.add_random_node()
+        if random.random() < neat.config.shift_weight_prob:
+            self.shift_random_weight(neat)
+        if random.random() < neat.config.random_weight_prob:
+            self.randomize_random_weight(neat)
+        if random.random() < neat.config.add_conn_prob:
+            self.add_random_connection(neat)
+        if random.random() < neat.config.add_node_prob:
+            self.add_random_node(neat)
 
 
     def random_node(self):
@@ -167,16 +166,16 @@ class Genome:
         conn.enabled = not conn.enabled
 
 
-    def randomize_random_weight(self):
-        self.random_connection().random_weight(self.neat.config.weight_rand_factor)
+    def randomize_random_weight(self, neat):
+        self.random_connection().random_weight(neat.config.weight_rand_factor)
     
 
-    def shift_random_weight(self):
-        self.random_connection().shift_weight(self.neat.config.weight_shift_factor)
+    def shift_random_weight(self, neat):
+        self.random_connection().shift_weight(neat.config.weight_shift_factor)
     
 
-    def add_random_connection(self):
-        for try_idx in range(self.neat.config.add_conn_tries):
+    def add_random_connection(self, neat):
+        for try_idx in range(neat.config.add_conn_tries):
             node_in = self.random_node()
             node_out = self.random_node()
 
@@ -191,7 +190,7 @@ class Genome:
                     node_in, node_out = node_out, node_in
                 
                 conn = ConnectionGene(node_in, node_out, enabled=True,
-                    weight_rand_factor=self.neat.config.weight_rand_factor)
+                    weight_rand_factor=neat.config.weight_rand_factor)
                 
                 node_in.connections.append(conn)
                 self.connections[conn.innovation_nb] = conn
@@ -199,11 +198,11 @@ class Genome:
                 return
     
 
-    def add_random_node(self):
+    def add_random_node(self, neat):
         conn = self.random_connection()
 
         # new node
-        new_node = self.neat.get_node(conn)
+        new_node = neat.get_node(conn)
         
         # new connections
         conn1 = ConnectionGene(conn.node_in, new_node, weight=1, enabled=True)
@@ -221,7 +220,7 @@ class Genome:
         del self.connections[conn.innovation_nb]
 
 
-    def distance(self, genome):
+    def distance(self, neat, genome):
         # required when treating disjoint and excess genes differently, most likely
         # unnecessary and time consuming (may be removed in a future update)
         g1, g2 = self, genome
@@ -254,15 +253,15 @@ class Genome:
         genes_nb = max(len(g1.connections), len(g2.connections))
         genes_nb = 1 if genes_nb < 20 else genes_nb
 
-        return (self.neat.config.excess_distance_coefficient * excess_genes / genes_nb) \
-        + (self.neat.config.disjoint_distance_coefficient * disjoint_genes / genes_nb) \
-        + self.neat.config.weights_distance_coefficient * avg_weight_diff
+        return (neat.config.excess_distance_coefficient * excess_genes / genes_nb) \
+        + (neat.config.disjoint_distance_coefficient * disjoint_genes / genes_nb) \
+        + neat.config.weights_distance_coefficient * avg_weight_diff
 
 
-    def crossover(self, genome):
+    def crossover(self, neat, genome):
         g1, g2 = (self, genome) if self.fitness > genome.fitness else (genome, self)
 
-        offspring = self.neat.base_genome.copy()
+        offspring = neat.base_genome.copy()
 
         for conn_key in g1.connections:
             if conn_key in g2.connections: # similar gene
@@ -289,10 +288,5 @@ class Genome:
     
 
     def save(self, path=f'genome.{FILE_EXT}'):
-        neat = self.neat
-        self.neat = None
-
         with open(path, 'wb') as file:
             pickle.dump(self, file)
-        
-        self.neat = neat

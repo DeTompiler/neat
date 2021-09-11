@@ -15,15 +15,15 @@ class Species:
         return len(self.genomes)
 
 
-    def compatible(self, genome):
-        return self.representative.distance(genome) <= self.representative.neat.config.genome_distance_threshold
+    def compatible(self, neat, genome):
+        return self.representative.distance(neat, genome) <= neat.config.genome_distance_threshold
     
 
-    def add_genome(self, genome, check_compatibility=True):
+    def add_genome(self, neat, genome, check_compatibility=True):
         if genome is self.representative:
             return True
 
-        elif check_compatibility and not self.compatible(genome):
+        elif check_compatibility and not self.compatible(neat, genome):
             return False
         
         self.genomes.append(genome)
@@ -34,16 +34,16 @@ class Species:
         self.genomes = sorted(self.genomes, key=lambda genome: genome.fitness, reverse=True)
 
 
-    def kill(self, precentage, kill_in_neat=False):
+    def kill(self, neat, precentage, kill_in_neat=False):
         size = math.ceil(len(self.genomes) * precentage)
         
-        if len(self.genomes) - size < self.representative.neat.config.min_species_population:
-            size = len(self.genomes) - self.representative.neat.config.min_species_population
+        if len(self.genomes) - size < neat.config.min_species_population:
+            size = len(self.genomes) - neat.config.min_species_population
 
         if kill_in_neat:
             for idx in range(size):
                 genome = self.genomes.pop()
-                genome.neat.genomes.remove(genome)
+                neat.genomes.remove(genome)
             
             return
         
@@ -58,8 +58,8 @@ class Species:
         return random.choices(self.genomes, weights=[genome.fitness for genome in self.genomes])[0]
     
 
-    def breed(self):
-        return self.random_genome().crossover(self.random_genome())
+    def breed(self, neat):
+        return self.random_genome(fitness_prob=True).crossover(neat, self.random_genome(fitness_prob=True))
 
     
     def adjust_fitness(self):
