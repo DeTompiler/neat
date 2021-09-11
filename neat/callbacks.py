@@ -98,3 +98,12 @@ class TimeTermination(TerminationCallback):
     def __call__(self, **kwargs):
         return (time.perf_counter() - self.start_time) >= self.run_time
 
+
+class EnvStopper():
+    def __init__(self, max_step, terminate):
+        self.max_step = max_step
+        self.terminate = terminate
+
+    
+    def __call__(self, step):
+        return step >= self.max_step
