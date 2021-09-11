@@ -100,8 +100,9 @@ class TimeTermination(TerminationCallback):
 
 
 class EnvStopper():
-    def __init__(self, max_step):
+    def __init__(self, max_step, differentiate_genomes=False):
         self.max_step = max_step
+        self.differentiate_genomes = differentiate_genomes
 
     
     def __call__(self, step):
