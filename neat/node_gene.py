@@ -15,10 +15,8 @@ class NodeGene(Gene):
         self.layer_nb = layer_nb
 
 
-    def copy(self, copy_connections=False):
-        connections = self.connections if copy_connections else []
-
-        return NodeGene(self.innovation_nb, connections, self.output, self.activation, self.layer_nb)
+    def copy(self):
+        return NodeGene(self.innovation_nb, self.output, self.activation, self.layer_nb)
     
 
     def apply_activation(self):
