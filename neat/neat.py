@@ -164,7 +164,7 @@ class Neat:
     
 
     def forward_all(self, genomes, inputs, genomes_alive):
-        predictions = np.empty(shape=(self.population, self.output_size))
+        predictions = np.empty(shape=(len(genomes), self.output_size))
 
         for idx, genome in enumerate(genomes):
             if genomes_alive[idx]:
