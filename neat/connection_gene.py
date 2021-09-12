@@ -1,6 +1,6 @@
+import numpy as np
 from neat.gene import Gene
 from neat.utils import Math
-import numpy as np
 
 
 class ConnectionGene(Gene):

@@ -1,17 +1,17 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-from neat.callbacks import TerminationCallback
 import pickle
+import random
+import numpy as np
+from concurrent.futures import ThreadPoolExecutor
+from neat.callbacks import TerminationCallback
 from neat.connection_gene import ConnectionGene
 from neat.genome import Genome
 from neat.node_gene import NodeGene
 from neat.species import Species
-import random
-import numpy as np
 from neat.callbacks import TerminationCallback, EnvStopper
 from neat.config import Config
-from threading import Thread
-from concurrent.futures import ThreadPoolExecutor
+
 
 
 class Neat:

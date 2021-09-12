@@ -1,6 +1,6 @@
-from neat.genome import Genome
 import os.path
 import time
+from neat.genome import Genome
 
 
 class GenomeSaving():

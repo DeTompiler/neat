@@ -1,8 +1,8 @@
 from collections import OrderedDict
 import numpy as np
-from neat.connection_gene import ConnectionGene
 import pickle
 import random
+from neat.connection_gene import ConnectionGene
 
 
 class Genome:
