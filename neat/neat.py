@@ -193,7 +193,9 @@ class Neat:
         while not done:
             if env_stopper is not None and env_stopper(step):
                 if env_stopper.differentiate_genomes:
-                    self.set_genomes_fitness(genomes, [env_stopper.alive_fitness if genome_alive else 0 for genome_alive in genomes_alive])
+                    if not env_stopper.use_scores:
+                        scores = [env_stopper.alive_fitness if genome_alive else 0 for genome_alive in genomes_alive]
+                    self.set_genomes_fitness(genomes, scores)
                 return True
 
             if visualize:
