@@ -100,9 +100,10 @@ class TimeTermination(TerminationCallback):
 
 
 class EnvStopper():
-    def __init__(self, max_step, differentiate_genomes=False, alive_fitness=1):
+    def __init__(self, max_step, differentiate_genomes=False, use_scores=True, alive_fitness=1):
         self.max_step = max_step
         self.differentiate_genomes = differentiate_genomes
+        self.use_scores = use_scores
         self.alive_fitness = alive_fitness
 
     
