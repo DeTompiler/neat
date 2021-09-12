@@ -4,7 +4,6 @@ import pickle
 import random
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor
-from neat.callbacks import TerminationCallback
 from neat.connection_gene import ConnectionGene
 from neat.genome import Genome
 from neat.node_gene import NodeGene
