@@ -430,7 +430,7 @@ class Neat:
             self.log(generation, top_fitness=genomes[0].fitness, final_log=True)
   
   
-    def test_data(self, inputs, outputs, callbacks=[], loss_function=Math.mse, global_inputs=True, verbose=0):
+    def test_data(self, inputs, outputs, genomes, callbacks=[], loss_function=Math.mse, global_inputs=True, verbose=0):
         termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
 
         generation = 1
