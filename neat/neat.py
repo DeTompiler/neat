@@ -10,6 +10,7 @@ from neat.node_gene import NodeGene
 from neat.species import Species
 from neat.callbacks import TerminationCallback, EnvStopper
 from neat.config import Config
+from neat.utils import Math
 
 
 
@@ -362,6 +363,37 @@ class Neat:
         
         if visualize:
             env.close()
+        
+        if verbose > 0:
+            self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=True)
+
+
+    def fit_data(self, inputs, outputs, callbacks=[], loss_function=Math.mse, verbose=0):
+        termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
+        
+        terminate = False
+
+        while not terminate:
+            self.sort_genome_nodes(self.genomes)
+            self.run_data(self.genomes, inputs, outputs, loss_function)
+            self.genomes = self.sort_genomes(self.genomes)
+               
+            if verbose == 1:
+                self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=False)
+
+            for callback in other_callbacks:
+                callback(neat=self, generation=self.generation)
+
+            for t_callback in termination_callbacks:
+                if t_callback(neat=self, generation=self.generation):
+                    terminate = True
+                    break
+            
+            if terminate:
+                break
+            
+            terminate = self.evolve()
+            self.generation += 1
         
         if verbose > 0:
             self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=True)
