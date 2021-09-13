@@ -163,17 +163,14 @@ class Neat:
         return sorted(genomes, key=lambda genome: genome.fitness, reverse=True)
     
 
-    def forward_all(self, genomes, inputs, forward_genomes=None):
+    def forward_all(self, genomes, inputs, global_inputs, forward_genomes=None):
         predictions = np.empty(shape=(len(genomes), self.output_size))
 
-        if forward_genomes is not None:
-            for idx, genome in enumerate(genomes):
-                if forward_genomes[idx]:
-                    predictions[idx] = genome.forward(self, inputs[idx])
-            
-        else:
-            for idx, genome in enumerate(genomes):
-                predictions[idx] = genome.forward(self, inputs[idx])
+        for idx, genome in enumerate(genomes):
+            if forward_genomes is not None and not forward_genomes[idx]:
+                continue
+                            
+            predictions[idx] = genome.forward(self, inputs if global_inputs else inputs[idx])
 
         return predictions
 
@@ -188,7 +185,7 @@ class Neat:
             genome.sort_nodes()
 
 
-    def run_env(self, env, genomes, env_stopper, visualize):
+    def run_env(self, env, genomes, env_stopper, global_inputs, visualize):
         states = env.reset()
 
         step = 0
@@ -206,7 +203,7 @@ class Neat:
             if visualize:
                 env.render()
 
-            next_states, scores, genomes_alive, done = env.step(self.forward_all(genomes, states, genomes_alive))
+            next_states, scores, genomes_alive, done = env.step(self.forward_all(genomes, states, global_inputs, genomes_alive))
             states = next_states
             step += 1
 
@@ -215,7 +212,7 @@ class Neat:
         return False
 
 
-    def run_env_threaded(self, env, genomes, nb_threads, env_stopper, visualize, env_args):
+    def run_env_threaded(self, env, genomes, nb_threads, env_stopper, global_inputs, visualize, env_args):
         Env = env.__class__
         threads = []
 
@@ -230,11 +227,12 @@ class Neat:
             threaded_env = Env(genomes_per_thread, *env_args)
 
             # thread (called future)
-            threads.append(executor.submit(self.run_env, threaded_env, genomes[cut_idx:cut_idx + genomes_per_thread], env_stopper, False))
+            threads.append(executor.submit(self.run_env, threaded_env, genomes[cut_idx:cut_idx + genomes_per_thread],
+            env_stopper, global_inputs, False))
             cut_idx += genomes_per_thread
 
         terminate = self.run_env(Env(genomes_per_thread + complementary_genomes, *env_args),
-            genomes[:genomes_per_thread + complementary_genomes], env_stopper, visualize)
+            genomes[:genomes_per_thread + complementary_genomes], env_stopper, global_inputs, visualize)
 
         executor.shutdown(wait=True)
 
@@ -248,14 +246,14 @@ class Neat:
         return False
 
     
-    def run_data(self, genomes, inputs, outputs, loss_function):
+    def run_data(self, genomes, inputs, outputs, loss_function, global_inputs):
         genomes_fitness = np.zeros(shape=(len(genomes)))
 
         if type(outputs) is not np.ndarray:
             outputs = np.array(outputs)
 
         for input_, output in zip(inputs, outputs):
-            predictions = self.forward_all(genomes, input_)
+            predictions = self.forward_all(genomes, input_, global_inputs)
             losses = loss_function(output, predictions)
 
             if type(losses) is not np.ndarray:
@@ -329,7 +327,7 @@ class Neat:
         return species_spawns
 
 
-    def fit_env(self, env, callbacks=[], threads=1, verbose=0, visualize=False, env_args=()):
+    def fit_env(self, env, callbacks=[], threads=1, global_inputs=False, verbose=0, visualize=False, env_args=()):
         termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
         
         terminate = False
@@ -338,9 +336,9 @@ class Neat:
             self.sort_genome_nodes(self.genomes)
 
             if threads > 1:
-                terminate = self.run_env_threaded(env, self.genomes, threads, env_stopper, visualize, env_args)
+                terminate = self.run_env_threaded(env, self.genomes, threads, env_stopper, global_inputs, visualize, env_args)
             else:
-                terminate = self.run_env(env, self.genomes, env_stopper, visualize)
+                terminate = self.run_env(env, self.genomes, env_stopper, global_inputs, visualize)
 
             self.genomes = self.sort_genomes(self.genomes)
                
@@ -368,14 +366,14 @@ class Neat:
             self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=True)
 
 
-    def fit_data(self, inputs, outputs, callbacks=[], loss_function=Math.mse, verbose=0):
+    def fit_data(self, inputs, outputs, callbacks=[], loss_function=Math.mse, global_inputs=True, verbose=0):
         termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
         
         terminate = False
 
         while not terminate:
             self.sort_genome_nodes(self.genomes)
-            self.run_data(self.genomes, inputs, outputs, loss_function)
+            self.run_data(self.genomes, inputs, outputs, loss_function, global_inputs)
             self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:
