@@ -428,6 +428,36 @@ class Neat:
         
         if verbose > 0:
             self.log(generation, top_fitness=genomes[0].fitness, final_log=True)
+  
+  
+    def test_data(self, inputs, outputs, callbacks=[], loss_function=Math.mse, global_inputs=True, verbose=0):
+        termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
+
+        generation = 1
+        terminate = False
+
+        while not terminate:
+            self.sort_genome_nodes(genomes)
+            self.run_data(genomes, inputs, outputs, loss_function, global_inputs)
+            genomes = self.sort_genomes(genomes)
+               
+            if verbose == 1:
+                self.log(generation, top_fitness=genomes[0].fitness, final_log=False)
+
+            for callback in other_callbacks:
+                callback(neat=self, generation=generation)
+
+            for t_callback in termination_callbacks:
+                if t_callback(neat=self, generation=generation):
+                    terminate = True
+            
+            if terminate:
+                break
+            
+            generation += 1
+        
+        if verbose > 0:
+            self.log(generation, top_fitness=genomes[0].fitness, final_log=True)
 
 
 
