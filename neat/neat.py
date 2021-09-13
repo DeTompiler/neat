@@ -397,7 +397,7 @@ class Neat:
             self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=True)
 
 
-    def test(self, env, genomes, callbacks=[], verbose=0, visualize=False):
+    def test_env(self, env, genomes, callbacks=[], verbose=0, visualize=False):
         termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
 
         generation = 1
