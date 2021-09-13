@@ -245,7 +245,28 @@ class Neat:
                 return True
         
         return False
+
     
+    def run_data(self, genomes, inputs, outputs, loss_function):
+        genomes_fitness = np.zeros(shape=(len(genomes)))
+
+        if type(outputs) is not np.ndarray:
+            outputs = np.array(outputs)
+
+        for input_, output in zip(inputs, outputs):
+            predictions = self.forward_all(genomes, input_)
+            losses = loss_function(output, predictions)
+
+            if type(losses) is not np.ndarray:
+                losses = np.array(losses)
+
+            genomes_fitness -= losses
+        
+        max_abs_loss = np.abs(np.min(genomes_fitness))
+        genomes_fitness += max_abs_loss + 1
+
+        self.set_genomes_fitness(genomes_fitness)
+
 
     def set_genomes(self, genomes):
         self.genomes = genomes        
