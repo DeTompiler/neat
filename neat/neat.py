@@ -162,13 +162,18 @@ class Neat:
         return sorted(genomes, key=lambda genome: genome.fitness, reverse=True)
     
 
-    def forward_all(self, genomes, inputs, genomes_alive):
+    def forward_all(self, genomes, inputs, forward_genomes=None):
         predictions = np.empty(shape=(len(genomes), self.output_size))
 
-        for idx, genome in enumerate(genomes):
-            if genomes_alive[idx]:
-                predictions[idx] = genome.forward(self, inputs[idx])
+        if forward_genomes is not None:
+            for idx, genome in enumerate(genomes):
+                if forward_genomes[idx]:
+                    predictions[idx] = genome.forward(self, inputs[idx])
             
+        else:
+            for idx, genome in enumerate(genomes):
+                predictions[idx] = genome.forward(self, inputs[idx])
+
         return predictions
 
     
@@ -187,7 +192,7 @@ class Neat:
 
         step = 0
         done = False
-        genomes_alive = [True for genome in genomes]
+        genomes_alive = None
 
         while not done:
             if env_stopper is not None and env_stopper(step):
@@ -240,7 +245,7 @@ class Neat:
                 return True
         
         return False
-
+    
 
     def set_genomes(self, genomes):
         self.genomes = genomes        
