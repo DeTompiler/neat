@@ -264,7 +264,7 @@ class Neat:
         max_abs_loss = np.abs(np.min(genomes_fitness))
         genomes_fitness += max_abs_loss + 1
 
-        self.set_genomes_fitness(genomes_fitness)
+        self.set_genomes_fitness(genomes, genomes_fitness)
 
 
     def set_genomes(self, genomes):
