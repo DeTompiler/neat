@@ -328,7 +328,7 @@ class Neat:
         return species_spawns
 
 
-    def fit(self, env, callbacks=[], threads=1, verbose=0, visualize=False, env_args=()):
+    def fit_env(self, env, callbacks=[], threads=1, verbose=0, visualize=False, env_args=()):
         termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
         
         terminate = False
