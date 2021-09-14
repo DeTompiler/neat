@@ -56,7 +56,7 @@ class Genome:
             self.nodes[node_key].output = input_value
 
 
-    def forward(self, inputs):
+    def predict(self, inputs):
         self.assign_inputs(inputs)
 
         for node in self.nodes.values():

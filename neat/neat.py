@@ -163,14 +163,14 @@ class Neat:
         return sorted(genomes, key=lambda genome: genome.fitness, reverse=True)
     
 
-    def forward_all(self, genomes, inputs, global_inputs, forward_genomes=None):
+    def predict_all(self, genomes, inputs, global_inputs, forward_genomes=None):
         predictions = np.empty(shape=(len(genomes), self.output_size))
 
         for idx, genome in enumerate(genomes):
             if forward_genomes is not None and not forward_genomes[idx]:
                 continue
                             
-            predictions[idx] = genome.forward(inputs if global_inputs else inputs[idx])
+            predictions[idx] = genome.predict(inputs if global_inputs else inputs[idx])
 
         return predictions
 
@@ -203,7 +203,7 @@ class Neat:
             if visualize:
                 env.render()
 
-            next_states, scores, genomes_alive, done = env.step(self.forward_all(genomes, states, global_inputs, genomes_alive))
+            next_states, scores, genomes_alive, done = env.step(self.predict_all(genomes, states, global_inputs, genomes_alive))
             states = next_states
             step += 1
 
@@ -253,7 +253,7 @@ class Neat:
             outputs = np.array(outputs)
 
         for input_, output in zip(inputs, outputs):
-            predictions = self.forward_all(genomes, input_, global_inputs)
+            predictions = self.predict_all(genomes, input_, global_inputs)
             losses = loss_function(output, predictions)
 
             if type(losses) is not np.ndarray:
