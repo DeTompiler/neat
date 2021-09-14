@@ -12,12 +12,13 @@ class Genome:
     FILE_EXT = 'gnc' # gnc - genome network configuration
 
 
-    def __init__(self, input_keys, output_keys):
+    def __init__(self, input_keys, output_keys, output_activation):
         self.input_keys = input_keys
         self.output_keys = output_keys
         self.nodes = OrderedDict()
         self.connections = {}
         self.fitness = 0.0
+        self.output_activation = output_activation
 
 
     def copy(self, copy_connections=True):
