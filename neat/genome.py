@@ -22,7 +22,7 @@ class Genome:
 
 
     def copy(self, copy_connections=True):
-        genome = Genome(self.input_keys.copy(), self.output_keys.copy())
+        genome = Genome(self.input_keys.copy(), self.output_keys.copy(), self.output_activation)
         genome.fitness = self.fitness
 
         for node_key in self.input_keys:
