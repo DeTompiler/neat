@@ -363,7 +363,7 @@ class Neat:
             self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=True)
 
 
-    def fit_data(self, inputs, outputs, callbacks=[], loss_function=Math.mse, global_inputs=True,
+    def fit_data(self, inputs, outputs, callbacks=[], loss_function=Math.mae, global_inputs=True,
         starting_fitness=100, verbose=0):
         termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
         
