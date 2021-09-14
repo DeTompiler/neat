@@ -170,7 +170,7 @@ class Neat:
             if forward_genomes is not None and not forward_genomes[idx]:
                 continue
                             
-            predictions[idx] = genome.forward(self, inputs if global_inputs else inputs[idx])
+            predictions[idx] = genome.forward(inputs if global_inputs else inputs[idx])
 
         return predictions
 
@@ -500,7 +500,7 @@ class Neat:
         input_keys = [input_node.innovation_nb for input_node in input_nodes]
         output_keys = [output_node.innovation_nb for output_node in output_nodes]
 
-        genome = Genome(input_keys, output_keys)
+        genome = Genome(input_keys, output_keys, self.config.output_activation)
 
         for input_node in input_nodes:
             for output_node in output_nodes:
