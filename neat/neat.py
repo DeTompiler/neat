@@ -246,8 +246,8 @@ class Neat:
         return False
 
     
-    def run_data(self, genomes, inputs, outputs, loss_function, global_inputs):
-        genomes_fitness = np.zeros(shape=(len(genomes)))
+    def run_data(self, genomes, inputs, outputs, loss_function, global_inputs, starting_fitness):
+        genomes_fitness = np.full(shape=len(genomes), fill_value=starting_fitness)
 
         if type(outputs) is not np.ndarray:
             outputs = np.array(outputs)
@@ -261,9 +261,6 @@ class Neat:
 
             genomes_fitness -= losses
         
-        max_abs_loss = np.abs(np.min(genomes_fitness))
-        genomes_fitness += max_abs_loss + 1
-
         self.set_genomes_fitness(genomes, genomes_fitness)
 
 
@@ -366,14 +363,15 @@ class Neat:
             self.log(self.generation, top_fitness=self.genomes[0].fitness, nb_species=len(self.species), final_log=True)
 
 
-    def fit_data(self, inputs, outputs, callbacks=[], loss_function=Math.mse, global_inputs=True, verbose=0):
+    def fit_data(self, inputs, outputs, callbacks=[], loss_function=Math.mse, global_inputs=True,
+        starting_fitness=100, verbose=0):
         termination_callbacks, other_callbacks, env_stopper = self.handle_callbacks(callbacks)
         
         terminate = False
 
         while not terminate:
             self.sort_genome_nodes(self.genomes)
-            self.run_data(self.genomes, inputs, outputs, loss_function, global_inputs)
+            self.run_data(self.genomes, inputs, outputs, loss_function, global_inputs, starting_fitness)
             self.genomes = self.sort_genomes(self.genomes)
                
             if verbose == 1:
