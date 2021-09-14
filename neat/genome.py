@@ -275,17 +275,8 @@ class Genome:
         return offspring
 
 
-    def __str__(self):
-        string = ''
-
-        for layer_nb in self.layers:
-            layer = self.layers[layer_nb]
-            string += f'layer {layer_nb}:\n'
-
-            for node in layer:
-                string += f'\t{node}\n'
-    
-        return string
+    def __str__(self): 
+        return '\n'.join([str(node) for node in self.nodes.values()])
     
 
     def save(self, path=f'genome.{FILE_EXT}'):
