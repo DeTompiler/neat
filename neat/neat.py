@@ -247,7 +247,7 @@ class Neat:
 
     
     def run_data(self, genomes, inputs, outputs, loss_function, global_inputs, starting_fitness):
-        genomes_fitness = np.full(shape=len(genomes), fill_value=starting_fitness)
+        genomes_fitness = np.full(shape=len(genomes), fill_value=starting_fitness, dtype=np.float64)
 
         if type(outputs) is not np.ndarray:
             outputs = np.array(outputs)
